@@ -1,0 +1,26 @@
+{
+  "name": "odin-battleship",
+  "version": "1.0.0",
+  "description": "This is an odin project project. The web app game will be designed and created using the TDD approach.",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest",
+    "start": "webpack serve --mode development"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/emilations/odin-Battleship.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/emilations/odin-Battleship/issues"
+  },
+  "homepage": "https://github.com/emilations/odin-Battleship#readme",
+  "devDependencies": {
+    "jest": "^29.1.1",
+    "webpack": "^5.74.0",
+    "webpack-cli": "^4.10.0",
+    "webpack-dev-server": "^4.11.1"
+  }
+}
