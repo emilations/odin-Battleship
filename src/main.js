@@ -1,4 +1,1 @@
-console.log('emile')
-
-import { Ship } from "./logic"
-
+// import { Ship } from "./logic"
