@@ -65,7 +65,7 @@ function gameboardFactory() {
   }
 
   return {
-    getGrid: [...grid],
+    grid,
     placeShip,
   };
 }

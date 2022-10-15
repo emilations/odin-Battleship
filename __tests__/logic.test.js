@@ -77,10 +77,13 @@ describe("Gameboard Factory", () => {
     let arrayResult = Array(10)
       .fill(0)
       .map(() => Array(10).fill('0'));
-    expect(gameboardFactory().getGrid).toEqual(arrayResult);
+      console.log(arrayResult)
+    let gameboardA = gameboardFactory();
+    expect(gameboardA.grid).toEqual(arrayResult);
   });
 
   test("Create ship in specific location", () => {
+    // Create mockup board
     let arrayResult = Array(10)
     .fill(0)
     .map(() => Array(10).fill('0'));
@@ -88,11 +91,18 @@ describe("Gameboard Factory", () => {
     arrayResult[3][6] = 'S';
     arrayResult[4][6] = 'S';
 
+    // Create ship
     let coor = { x: 2, y: 6 , dir: "x"};
-    let shipSize = 3;
-    gameboardFactory.placeShip(coor, shipSize);
+    let shipA = shipFactory(3);
+    console.log(shipA)
+    
+    // Create a gameboard
+    let gameboardA = gameboardFactory()
+
+    // Launch test
+    gameboardFactory.placeShip(coor, shipA);
     let grid = gameboardFactory.getGrid;
-    expect(grid).toBe();
+    expect(grid).toBe(arrayResult);
   });
 
   test("Receive attack, call hit function on correct ship, or record the missed shot", () => {
