@@ -57,14 +57,21 @@ function shipFactory(length, name) {
 function gameboardFactory() {
   // '0' was chosen to represent an empty slot
   // grid[x][y]
+  // grid legend 0: Empty
+  //             S: Ship is present
+  //             H: Ship is hit
+  //             M: Missed shot
+
   let grid = Array(10)
     .fill(0)
     .map(() => Array(10).fill("0"));
 
   let placeShip = function (coor, ship) {
-    if ((coor.dir == "x" && coor.x + ship.length > 10) ||
-        (coor.dir == "y" && coor.y + ship.length > 10) ){
-      throw new Error("Outside of grid")
+    if (
+      (coor.dir == "x" && coor.x + ship.length > 10) ||
+      (coor.dir == "y" && coor.y + ship.length > 10)
+    ) {
+      throw new Error("Outside of grid");
     }
 
     if (coor.dir == "x") {
@@ -79,9 +86,35 @@ function gameboardFactory() {
     return "success";
   };
 
+  let attack = function (coor) {
+    if ((coor.x < 0 && coor.x > 9) || (coor.y < 0 && coor.y > 9)) {
+      throw new Error("out of bounds array");
+    }
+    if (grid[coor.x][coor.y] == "S") {
+      grid[coor.x][coor.y] = "H";
+      return "hit";
+    } else {
+      grid[coor.x][coor.y] = "M";
+      return "miss";
+    }
+  };
+
+  let isAllHit = function () {
+    let allHit = true
+    grid.forEach(elem => {
+      if (elem.includes('S')){
+        console.log('one more S')
+        allHit = false
+      }
+    })
+    return allHit
+  }
+
   return {
     grid,
     placeShip,
+    attack,
+    isAllHit,
   };
 }
 
