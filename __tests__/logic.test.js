@@ -14,42 +14,38 @@ describe("Ship factory", () => {
 
   test("Create ship with correct length of 3?", () => {
     let shipA = shipFactory(3);
-    expect(shipA.getFuselage()).toEqual(['S', 'S', 'S']);
+    expect(shipA.getFuselage()).toEqual(["S", "S", "S"]);
   });
 
   test("Create ship with correct length of 5?", () => {
     let shipA = shipFactory(5);
-    expect(shipA.getFuselage()).toEqual(['S', 'S', 'S', 'S', 'S']);
+    expect(shipA.getFuselage()).toEqual(["S", "S", "S", "S", "S"]);
   });
 
   test("Ships longer than 5 are not allowed", () => {
-    expect(() => shipFactory(6)).toThrow(
-      "Length must be between 2 and 5"
-    );
+    expect(() => shipFactory(6)).toThrow("Length must be between 2 and 5");
   });
 
   test("Ships smaller than 2 are not allowed", () => {
-    expect(() => shipFactory(1)).toThrow(
-      "Length must be between 2 and 5"
-    );
+    expect(() => shipFactory(1)).toThrow("Length must be between 2 and 5");
   });
 
   test("Hit the ship at location 1", () => {
     let shipA = shipFactory(3);
     shipA.hit(1);
-    expect(shipA.getFuselage()).toEqual(['S', 'H', 'S']);
+    expect(shipA.getFuselage()).toEqual(["S", "H", "S"]);
   });
 
   test("Hit the ship at location 4", () => {
     let shipA = shipFactory(5);
     shipA.hit(4);
-    expect(shipA.getFuselage()).toEqual(['S', 'S', 'S', 'S', 'H']);
+    expect(shipA.getFuselage()).toEqual(["S", "S", "S", "S", "H"]);
   });
 
   test("Is a ship hit successful", () => {
     let shipA = shipFactory(3);
     shipA.hit(1);
-    expect(shipA.getFuselage()).toEqual(['S', 'H', 'S']);
+    expect(shipA.getFuselage()).toEqual(["S", "H", "S"]);
   });
 
   test("Does hit fails if out of bounds?", () => {
@@ -73,38 +69,152 @@ describe("Ship factory", () => {
 
 // Gameboard factory ----------------------------------------------------------
 describe("Gameboard Factory", () => {
+  
   test("Create a gameboard", () => {
     let arrayResult = Array(10)
       .fill(0)
-      .map(() => Array(10).fill('0'));
-      console.log(arrayResult)
+      .map(() => Array(10).fill("0"));
     let gameboardA = gameboardFactory();
     expect(gameboardA.grid).toEqual(arrayResult);
   });
 
-  test("Create ship in specific location", () => {
+  test("Place ship size 3 at 2:6 in x direction", () => {
     // Create mockup board
     let arrayResult = Array(10)
-    .fill(0)
-    .map(() => Array(10).fill('0'));
-    arrayResult[2][6] = 'S';
-    arrayResult[3][6] = 'S';
-    arrayResult[4][6] = 'S';
+      .fill(0)
+      .map(() => Array(10).fill("0"));
+    arrayResult[2][6] = "S";
+    arrayResult[3][6] = "S";
+    arrayResult[4][6] = "S";
+
+    // coordonates X, Y, direction
+    let coorA = {
+      x: 2,
+      y: 6,
+      dir: 'x',
+    };
 
     // Create ship
-    let coor = { x: 2, y: 6 , dir: "x"};
     let shipA = shipFactory(3);
-    console.log(shipA)
-    
+
     // Create a gameboard
-    let gameboardA = gameboardFactory()
+    let gameboardA = gameboardFactory();
 
     // Launch test
-    gameboardFactory.placeShip(coor, shipA);
-    let grid = gameboardFactory.getGrid;
-    expect(grid).toBe(arrayResult);
+    gameboardA.placeShip(coorA, shipA);
+    expect(gameboardA.grid).toEqual(arrayResult);
   });
 
+  test("Place ship size 5 at 5:1 in y direction", () => {
+    // Create mockup board
+    let arrayResult = Array(10)
+      .fill(0)
+      .map(() => Array(10).fill("0"));
+    arrayResult[5][1] = "S";
+    arrayResult[5][2] = "S";
+    arrayResult[5][3] = "S";
+    arrayResult[5][4] = "S";
+    arrayResult[5][5] = "S";
+
+    // coordonates X, Y, direction
+    let coorA = {
+      x: 5,
+      y: 1,
+      dir: 'y',
+    };
+
+    // Create ship
+    let shipA = shipFactory(5);
+
+    // Create a gameboard
+    let gameboardA = gameboardFactory();
+    gameboardA.placeShip(coorA, shipA);
+
+    // Launch test
+    gameboardA.placeShip(coorA, shipA);
+    expect(gameboardA.grid).toEqual(arrayResult);
+  });
+
+  test("Place ship size 2 at 1:8 in y direction", () => {
+    // Create mockup board
+    let arrayResult = Array(10)
+      .fill(0)
+      .map(() => Array(10).fill("0"));
+    arrayResult[1][8] = "S";
+    arrayResult[1][9] = "S";
+    
+    // coordonates X, Y, direction
+    let coorA = {
+      x: 1,
+      y: 8,
+      dir: 'y',
+    };
+
+    // Create ship
+    let shipA = shipFactory(2);
+
+    // Create a gameboard
+    let gameboardA = gameboardFactory();
+
+    // Launch test
+    gameboardA.placeShip(coorA, shipA);
+    expect(gameboardA.grid).toEqual(arrayResult);
+  });
+
+  test("Place ship size 3 at 1:8 in y direction and return error", () => {
+    // coordonates X, Y, direction
+    let coorA = {
+      x: 1,
+      y: 8,
+      dir: 'y',
+    };
+
+    // Create ship
+    let shipA = shipFactory(3);
+
+    // Create a gameboard
+    let gameboardA = gameboardFactory();
+
+    // Launch test
+    expect(() => gameboardA.placeShip(coorA, shipA)).toThrow("Outside of grid");
+  });
+
+  test("Place ship size 5 at 8:2 in x direction and return error", () => {
+    // coordonates X, Y, direction
+    let coorA = {
+      x: 8,
+      y: 2,
+      dir: 'x',
+    };
+
+    // Create ship
+    let shipA = shipFactory(5);
+
+    // Create a gameboard
+    let gameboardA = gameboardFactory();
+
+    // Launch test
+    expect(() => gameboardA.placeShip(coorA, shipA)).toThrow("Outside of grid");
+  });
+
+  test("Place ship size 3 at 8:8 in y direction and return error", () => {
+    // coordonates X, Y, direction
+    let coorA = {
+      x: 8,
+      y: 8,
+      dir: 'y',
+    };
+
+    // Create ship
+    let shipA = shipFactory(3);
+    
+    // Create a gameboard
+    let gameboardA = gameboardFactory();
+
+    // Launch test
+    expect(() => gameboardA.placeShip(coorA, shipA)).toThrow("Outside of grid");
+  });
+  
   test("Receive attack, call hit function on correct ship, or record the missed shot", () => {
     expect().toBe("");
   });

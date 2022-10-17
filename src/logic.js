@@ -1,27 +1,27 @@
 // General data ---------------------------------------------------------------
 let shipClasses = {
-  'Carrier': 5,
-  'Battleship': 4,
-  'Destroyers': 3,
-  'Submarine': 3,
-  'Patrol Boat': 2,
-}
+  Carrier: 5,
+  Battleship: 4,
+  Destroyers: 3,
+  Submarine: 3,
+  "Patrol Boat": 2,
+};
 
 // Ship factory ---------------------------------------------------------------
 function shipFactory(length, name) {
   let _sank = false;
   // Hardcoded ship class names
   let _name = name;
-  
+
   // Ships can only range from size 2 to 5 as specified in the classes
   if (length > 5 || length <= 1) {
-    throw new Error("Length must be between 2 and 5")
+    throw new Error("Length must be between 2 and 5");
   }
 
   // 0 is no hits while a 1 represets a hit
   let fuselage = [];
   fuselage.length = length;
-  fuselage.fill('S');
+  fuselage.fill("S");
 
   // Return the grid of the ship
   let getFuselage = function () {
@@ -33,13 +33,13 @@ function shipFactory(length, name) {
     if (location > length - 1) {
       throw new Error("hit not successful");
     }
-    fuselage[location] = 'H';
+    fuselage[location] = "H";
     return "hit successful";
   };
 
   // Evaluate if the ship is all filled with hits
   let isSunk = function () {
-    if (fuselage.every((elem) => elem == 'H')) {
+    if (fuselage.every((elem) => elem == "H")) {
       _sank = true;
     }
     return _sank;
@@ -56,13 +56,28 @@ function shipFactory(length, name) {
 // Gameboard factory ----------------------------------------------------------
 function gameboardFactory() {
   // '0' was chosen to represent an empty slot
+  // grid[x][y]
   let grid = Array(10)
-  .fill(0)
-  .map(() => Array(10).fill('0'));;
+    .fill(0)
+    .map(() => Array(10).fill("0"));
 
-  let placeShip = function(coor, shipSize){
-    return 
-  }
+  let placeShip = function (coor, ship) {
+    if ((coor.dir == "x" && coor.x + ship.length > 10) ||
+        (coor.dir == "y" && coor.y + ship.length > 10) ){
+      throw new Error("Outside of grid")
+    }
+
+    if (coor.dir == "x") {
+      for (let i = 0; i < ship.length; i++) {
+        grid[coor.x + i][coor.y] = "S";
+      }
+    } else if (coor.dir == "y") {
+      for (let i = 0; i < ship.length; i++) {
+        grid[coor.x][coor.y + i] = "S";
+      }
+    }
+    return "success";
+  };
 
   return {
     grid,
