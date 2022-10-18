@@ -1,55 +1,89 @@
-// General data ---------------------------------------------------------------
+// Shared variables
 let shipClasses = {
-  Carrier: 5,
-  Battleship: 4,
-  Destroyers: 3,
-  Submarine: 3,
-  "Patrol Boat": 2,
+  2: "Patrol Boat",
+  3: "Submarine",
+  3: "Destroyer",
+  4: "Battleship",
+  5: "Carrier",
 };
+// USed to create S1 S2 S3 in the gameboard grid
+let shipIdCounter = 0;
 
 // Ship factory ---------------------------------------------------------------
-function shipFactory(length, name) {
-  let _sank = false;
-  // Hardcoded ship class names
-  let _name = name;
-
+function shipFactory(shipLength, shipId) {
   // Ships can only range from size 2 to 5 as specified in the classes
-  if (length > 5 || length <= 1) {
+  if (shipLength > 5 || shipLength <= 1) {
     throw new Error("Length must be between 2 and 5");
   }
 
-  // 0 is no hits while a 1 represets a hit
-  let fuselage = [];
-  fuselage.length = length;
-  fuselage.fill("S");
+  // Initialize ship
+  let type = shipClasses[shipLength];
+  let fuselage = Array(shipLength).fill(true);
+  let allCoor = Array(shipLength);
 
-  // Return the grid of the ship
   let getFuselage = function () {
     return [...fuselage];
   };
 
-  // Location is uses array index
-  let hit = function (location) {
-    if (location > length - 1) {
-      throw new Error("hit not successful");
+  let getCoor = function () {
+    return [...allCoor];
+  };
+
+  // Save coordinates of ship
+  // coor is an object {x, y, dir}
+  let setCoor = function (coor) {
+    allCoor[0] = {
+      x: coor.x,
+      y: coor.y,
+    };
+
+    // Generate the rest of the coordinates based on initial allCoor[0]
+    if (coor.dir == "x") {
+      for (let i = 1; i < shipLength; i++) {
+        allCoor[i] = {
+          x: coor.x + i,
+          y: coor.y,
+        };
+      }
+    } else if (coor.dir == "y") {
+      for (let i = 1; i < shipLength; i++) {
+        allCoor[i] = {
+          x: coor.x,
+          y: coor.y + i,
+        };
+      }
     }
-    fuselage[location] = "H";
-    return "hit successful";
+  };
+
+  // Use coordinates to locate index and then change fuselage state
+  let hit = function (coor) {
+    let hitSuccess = false;
+    allCoor.forEach((elem, index) => {
+      if (JSON.stringify(elem) == JSON.stringify(coor)) {
+        fuselage[index] = false;
+        hitSuccess = true;
+      }
+    });
+    return hitSuccess;
   };
 
   // Evaluate if the ship is all filled with hits
   let isSunk = function () {
-    if (fuselage.every((elem) => elem == "H")) {
-      _sank = true;
+    if (fuselage.every((elem) => !elem)) {
+      return true;
     }
-    return _sank;
+    return false;
   };
 
   return {
-    length,
+    shipId,
+    type,
+    shipLength,
     getFuselage,
-    isSunk,
+    setCoor,
+    getCoor,
     hit,
+    isSunk,
   };
 }
 
@@ -58,7 +92,7 @@ function gameboardFactory() {
   // '0' was chosen to represent an empty slot
   // grid[x][y]
   // grid legend 0: Empty
-  //             S: Ship is present
+  //             SX: Ship ID
   //             H: Ship is hit
   //             M: Missed shot
 
@@ -66,49 +100,46 @@ function gameboardFactory() {
     .fill(0)
     .map(() => Array(10).fill("0"));
 
-  let placeShip = function (coor, ship) {
-    if (
-      (coor.dir == "x" && coor.x + ship.length > 10) ||
-      (coor.dir == "y" && coor.y + ship.length > 10)
-    ) {
-      throw new Error("Outside of grid");
-    }
-
-    if (coor.dir == "x") {
-      for (let i = 0; i < ship.length; i++) {
-        grid[coor.x + i][coor.y] = "S";
+  let placeShip = function (coor, shipLength) {
+    let shipId = `S${shipIdCounter}`;
+    shipIdCounter++;
+    let ship = shipFactory(shipLength, shipId, coor);
+    grid[coor.x][coor.y] = "shipId";
+    if (coor.dir == 'x'){
+      for (let i = 0; i < shipLength; i++){
+        grid[coor.x + i][coor.y] = shipId;
       }
-    } else if (coor.dir == "y") {
-      for (let i = 0; i < ship.length; i++) {
-        grid[coor.x][coor.y + i] = "S";
+    } else if (coor.dir == 'y'){
+      for (let i = 0; i < shipLength; i++){
+        grid[coor.x][coor.y + i] = shipId;
       }
     }
-    return "success";
+    return 'success'
   };
 
   let attack = function (coor) {
-    if ((coor.x < 0 && coor.x > 9) || (coor.y < 0 && coor.y > 9)) {
-      throw new Error("out of bounds array");
-    }
-    if (grid[coor.x][coor.y] == "S") {
-      grid[coor.x][coor.y] = "H";
-      return "hit";
-    } else {
-      grid[coor.x][coor.y] = "M";
-      return "miss";
-    }
+    // if ((coor.x < 0 && coor.x > 9) || (coor.y < 0 && coor.y > 9)) {
+    //   throw new Error("out of bounds array");
+    // }
+    // if (grid[coor.x][coor.y] == "S") {
+    //   grid[coor.x][coor.y] = "H";
+    //   return "hit";
+    // } else {
+    //   grid[coor.x][coor.y] = "M";
+    //   return "miss";
+    // }
   };
 
   let isAllHit = function () {
-    let allHit = true
-    grid.forEach(elem => {
-      if (elem.includes('S')){
-        console.log('one more S')
-        allHit = false
+    let allHit = true;
+    grid.forEach((elem) => {
+      if (elem.includes("S")) {
+        console.log("one more S");
+        allHit = false;
       }
-    })
-    return allHit
-  }
+    });
+    return allHit;
+  };
 
   return {
     grid,
@@ -117,6 +148,23 @@ function gameboardFactory() {
     isAllHit,
   };
 }
+
+let player = {
+  type: "human",
+  score: 0,
+  takeTurn: function () {},
+};
+
+let computer = {
+  type: "ai",
+  score: 0,
+  takeTurn: function () {},
+};
+
+let game = function () {
+  player.gameboard = gameboardFactory();
+  computer.gameboard = gameboardFactory();
+};
 
 // Create Gameboard factory.
 
