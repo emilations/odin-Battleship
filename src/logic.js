@@ -6,8 +6,7 @@ let shipClasses = {
   4: "Battleship",
   5: "Carrier",
 };
-// USed to create S1 S2 S3 in the gameboard grid
-let shipIdCounter = 0;
+// Used to create S1 S2 S3 names in the gameboard grid
 
 // Ship factory ---------------------------------------------------------------
 function shipFactory(shipLength, shipId) {
@@ -19,7 +18,7 @@ function shipFactory(shipLength, shipId) {
   // Initialize ship
   let type = shipClasses[shipLength];
   let fuselage = Array(shipLength).fill(true);
-  let allCoor = Array(shipLength);
+  let allCoor = Array();
 
   let getFuselage = function () {
     return [...fuselage];
@@ -30,29 +29,9 @@ function shipFactory(shipLength, shipId) {
   };
 
   // Save coordinates of ship
-  // coor is an object {x, y, dir}
+  // coor is an object {x, y}
   let setCoor = function (coor) {
-    allCoor[0] = {
-      x: coor.x,
-      y: coor.y,
-    };
-
-    // Generate the rest of the coordinates based on initial allCoor[0]
-    if (coor.dir == "x") {
-      for (let i = 1; i < shipLength; i++) {
-        allCoor[i] = {
-          x: coor.x + i,
-          y: coor.y,
-        };
-      }
-    } else if (coor.dir == "y") {
-      for (let i = 1; i < shipLength; i++) {
-        allCoor[i] = {
-          x: coor.x,
-          y: coor.y + i,
-        };
-      }
-    }
+    allCoor.push({ x: coor.x, y: coor.y });
   };
 
   // Use coordinates to locate index and then change fuselage state
@@ -89,6 +68,9 @@ function shipFactory(shipLength, shipId) {
 
 // Gameboard factory ----------------------------------------------------------
 function gameboardFactory() {
+  let shipIdCounter = 1;
+  let shipList = [];
+
   // '0' was chosen to represent an empty slot
   // grid[x][y]
   // grid legend 0: Empty
@@ -101,48 +83,58 @@ function gameboardFactory() {
     .map(() => Array(10).fill("0"));
 
   let placeShip = function (coor, shipLength) {
+    if (coor.dir == "x" && coor.x + shipLength > 9) {
+      throw new Error("Outside of grid");
+    } else if (coor.dir == "y" && coor.y + shipLength > 9) {
+      throw new Error("Outside of grid");
+    }
+
     let shipId = `S${shipIdCounter}`;
     shipIdCounter++;
-    let ship = shipFactory(shipLength, shipId, coor);
-    grid[coor.x][coor.y] = "shipId";
-    if (coor.dir == 'x'){
-      for (let i = 0; i < shipLength; i++){
+
+    let ship = shipFactory(shipLength, shipId);
+    shipList.push(ship);
+    if (coor.dir == "x") {
+      for (let i = 0; i < shipLength; i++) {
         grid[coor.x + i][coor.y] = shipId;
+        ship.setCoor({ x: coor.x + i, y: coor.y });
       }
-    } else if (coor.dir == 'y'){
-      for (let i = 0; i < shipLength; i++){
+    } else if (coor.dir == "y") {
+      for (let i = 0; i < shipLength; i++) {
         grid[coor.x][coor.y + i] = shipId;
+        ship.setCoor({ x: coor.x, y: coor.y + i });
       }
     }
-    return 'success'
+    return ship;
+    // add ship to gameboard array
   };
 
   let attack = function (coor) {
-    // if ((coor.x < 0 && coor.x > 9) || (coor.y < 0 && coor.y > 9)) {
-    //   throw new Error("out of bounds array");
-    // }
-    // if (grid[coor.x][coor.y] == "S") {
-    //   grid[coor.x][coor.y] = "H";
-    //   return "hit";
-    // } else {
-    //   grid[coor.x][coor.y] = "M";
-    //   return "miss";
-    // }
+    if (coor.x < 0 || coor.x > 9 || coor.y < 0 || coor.y > 9) {
+      throw new Error("Outside of grid");
+    }
+    if (grid[coor.x][coor.y][0] == "S") {
+      grid[coor.x][coor.y] = grid[coor.x][coor.y].replace("S", "H");
+      shipList.find((item, index, array) => {
+        return item.hit(coor);
+      });
+      return "Hit";
+    } else if (grid[coor.x][coor.y][0] == "H") {
+      return "Already hit";
+    } else {
+      grid[coor.x][coor.y] = "M";
+      return "Miss";
+    }
   };
 
   let isAllHit = function () {
-    let allHit = true;
-    grid.forEach((elem) => {
-      if (elem.includes("S")) {
-        console.log("one more S");
-        allHit = false;
-      }
-    });
-    return allHit;
+    console.log(shipList)
+    return shipList.every((elem) => (elem.isSunk()));
   };
 
   return {
-    grid,
+    shipList,
+    grid: [...grid],
     placeShip,
     attack,
     isAllHit,
