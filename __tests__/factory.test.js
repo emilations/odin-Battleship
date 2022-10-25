@@ -1,4 +1,8 @@
-const { shipFactory, gameboardFactory } = require("../src/logic");
+const {
+  shipFactory,
+  gameboardFactory,
+  playerFactory,
+} = require("../src/factory");
 
 // ----------------------------------------------------------------------------
 // Ship factory ---------------------------------------------------------------
@@ -69,6 +73,7 @@ describe("Ship factory", () => {
   });
 });
 
+// ----------------------------------------------------------------------------
 // ----------------------------------------------------------------------------
 // Gameboard factory ----------------------------------------------------------
 describe("Gameboard Factory", () => {
@@ -361,6 +366,10 @@ describe("Gameboard Factory", () => {
     expect(() => gameboardA.attack(coorHit)).toThrow("Outside of grid");
   });
 
+  test("Get the position of all attacks", () => {
+    expect().toBe("e");
+  });
+
   test("Report if all ships have been sunk", () => {
     // Create mockup board
     let arrayResult = Array(10)
@@ -420,17 +429,47 @@ describe("Gameboard Factory", () => {
     gameboardA.attack(coorHitD);
     gameboardA.attack(coorHitE);
     expect(gameboardA.grid).toEqual(arrayResult);
-    console.log(gameboardA.shipList[0].getFuselage())
-    console.log(gameboardA.shipList[1].getFuselage())
-    console.log(gameboardA.shipList[0].isSunk())
-    console.log(gameboardA.shipList[1].isSunk())
     expect(gameboardA.isAllHit()).toEqual(true);
   });
 });
 
-// Create Gameboard factory.
-// Note that we have not yet created any User Interface. We should know our code is coming together by running the tests. You shouldn’t be relying on console.logs or DOM methods to make sure your code is doing what you expect it to.
-// Gameboards should be able to place ships at specific coordinates by calling the ship factory function.
-// Gameboards should have a receiveAttack function that takes a pair of coordinates, determines whether or not the attack hit a ship and then sends the ‘hit’ function to the correct ship, or records the coordinates of the missed shot.
-// Gameboards should keep track of missed attacks so they can display them properly.
-// Gameboards should be able to report whether or not all of their ships have been sunk.
+describe("Player Factory", () => {
+  test("Create unsupported player", () => {
+    expect(() => playerFactory("Alien")).toThrow("Unsupported type");
+  });
+
+  test("Create human player", () => {
+    let obj = {
+      type: "Human",
+      score: 0,
+      gameboard: expect.anything(),
+      takeTurn: expect.anything(),
+    };
+    expect(playerFactory("Human")).toMatchObject(obj);
+  });
+
+  test("Create computer player", () => {
+    let obj = {
+      type: "Computer",
+      score: 0,
+      gameboard: expect.anything(),
+      takeTurn: expect.anything(),
+    };
+    expect(playerFactory("Computer")).toMatchObject(obj);
+  });
+
+  test("Human take turn and hit", () => {
+    let human = playerFactory("Human");
+    let computer = playerFactory("Computer");
+    computer.placeShip({ x: 2, y: 5, dir: "x" }, 3);
+    expect(human.takeTurn(computer.gameboard, { x: 3, y: 5 })).toBe("Hit");
+  });
+
+  test("Computer take turn", () => {
+    let human = playerFactory("Human");
+    let computer = playerFactory("Computer");
+    computer.placeShip({ x: 2, y: 5, dir: "x" }, 3);
+    expect(human.takeTurn(computer.gameboard, { x: 3, y: 5 })).toBe("Hit");
+  });
+
+});

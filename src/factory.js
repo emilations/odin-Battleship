@@ -11,7 +11,7 @@ let shipClasses = {
 // Ship factory ---------------------------------------------------------------
 function shipFactory(shipLength, shipId) {
   // Ships can only range from size 2 to 5 as specified in the classes
-  if (shipLength > 5 || shipLength <= 1) {
+  if (!shipLength || shipLength > 5 || shipLength <= 1) {
     throw new Error("Length must be between 2 and 5");
   }
 
@@ -77,7 +77,6 @@ function gameboardFactory() {
   //             SX: Ship ID
   //             H: Ship is hit
   //             M: Missed shot
-
   let grid = Array(10)
     .fill(0)
     .map(() => Array(10).fill("0"));
@@ -128,8 +127,7 @@ function gameboardFactory() {
   };
 
   let isAllHit = function () {
-    console.log(shipList)
-    return shipList.every((elem) => (elem.isSunk()));
+    return shipList.every((elem) => elem.isSunk());
   };
 
   return {
@@ -141,30 +139,33 @@ function gameboardFactory() {
   };
 }
 
-let player = {
-  type: "human",
-  score: 0,
-  takeTurn: function () {},
+let playerFactory = function (type) {
+  if (type == "Human") {
+    return {
+      type: "Human",
+      score: 0,
+      gameboard: gameboardFactory(),
+      placeShip: function(coor, shipLength){
+        this.gameboard.placeShip(coor, shipLength)
+      },
+      takeTurn: function (gameboard, coor) {
+        return gameboard.attack(coor)
+      },
+    };
+  } else if (type == "Computer") {
+    return {
+      type: "Computer",
+      score: 0,
+      gameboard: gameboardFactory(),
+      placeShip: function(coor, shipLength){
+        this.gameboard.placeShip(coor, shipLength)
+      },
+      takeTurn: function (gameboard, coor) {},
+    };
+  } else {
+    throw new Error("Unsupported type");
+  }
 };
-
-let computer = {
-  type: "ai",
-  score: 0,
-  takeTurn: function () {},
-};
-
-let game = function () {
-  player.gameboard = gameboardFactory();
-  computer.gameboard = gameboardFactory();
-};
-
-// Create Gameboard factory.
-
-// Note that we have not yet created any User Interface. We should know our code is coming together by running the tests. You shouldn’t be relying on console.logs or DOM methods to make sure your code is doing what you expect it to.
-// Gameboards should be able to place ships at specific coordinates by calling the ship factory function.
-// Gameboards should have a receiveAttack function that takes a pair of coordinates, determines whether or not the attack hit a ship and then sends the ‘hit’ function to the correct ship, or records the coordinates of the missed shot.
-// Gameboards should keep track of missed attacks so they can display them properly.
-// Gameboards should be able to report whether or not all of their ships have been sunk.
 
 // ----------------------------------------------------------------------------
-module.exports = { shipFactory, gameboardFactory };
+module.exports = { shipFactory, gameboardFactory, playerFactory };
