@@ -82,7 +82,7 @@ describe("Gameboard Factory", () => {
       .fill(0)
       .map(() => Array(10).fill("0"));
     let gameboardA = gameboardFactory();
-    expect(gameboardA.grid).toEqual(arrayResult);
+    expect(gameboardA.getPrivateGrid()).toEqual(arrayResult);
   });
 
   test("Place ship size 3 at 2:6 in x direction", () => {
@@ -107,7 +107,7 @@ describe("Gameboard Factory", () => {
     // Launch test
     gameboardA.placeShip(coorA, 3);
 
-    expect(gameboardA.grid).toEqual(arrayResult);
+    expect(gameboardA.getPrivateGrid()).toEqual(arrayResult);
   });
 
   test("Place two ships size 3 @ 5:1 y and size 5 at 1:9 in x", () => {
@@ -144,7 +144,7 @@ describe("Gameboard Factory", () => {
     gameboardA.placeShip(coorA, 3);
     gameboardA.placeShip(coorB, 5);
     // Launch test
-    expect(gameboardA.grid).toEqual(arrayResult);
+    expect(gameboardA.getPrivateGrid()).toEqual(arrayResult);
   });
 
   test("Place ship size 5 at 8:2 in x direction and return error", () => {
@@ -200,7 +200,7 @@ describe("Gameboard Factory", () => {
     gameboardA.placeShip(coorShip, 2);
 
     expect(gameboardA.attack(coorHit)).toBe("Hit");
-    expect(gameboardA.grid).toEqual(arrayResult);
+    expect(gameboardA.getPrivateGrid()).toEqual(arrayResult);
     expect(gameboardA.shipList[0].getFuselage()).toEqual([true, false]);
   });
 
@@ -257,7 +257,7 @@ describe("Gameboard Factory", () => {
     gameboardA.placeShip(coorShipC, 3);
     gameboardA.attack(coorHitA);
     gameboardA.attack(coorHitB);
-    expect(gameboardA.grid).toEqual(arrayResult);
+    expect(gameboardA.getPrivateGrid()).toEqual(arrayResult);
     expect(gameboardA.shipList[2].getFuselage()).toEqual([false, true, false]);
   });
 
@@ -325,7 +325,7 @@ describe("Gameboard Factory", () => {
     gameboardA.placeShip(coorShip, 2);
 
     expect(gameboardA.attack(coorHit)).toBe("Miss");
-    expect(gameboardA.grid).toEqual(arrayResult);
+    expect(gameboardA.getPrivateGrid()).toEqual(arrayResult);
   });
 
   test("Attack outside grid #1", () => {
@@ -366,8 +366,31 @@ describe("Gameboard Factory", () => {
     expect(() => gameboardA.attack(coorHit)).toThrow("Outside of grid");
   });
 
-  test("Get the position of all attacks", () => {
-    expect().toBe("e");
+  test("Recieve enemy view of grid", () => {
+    // Create mockup board
+    let arrayResult = Array(10)
+      .fill(0)
+      .map(() => Array(10).fill("0"));
+    arrayResult[1][1] = "H";
+    arrayResult[1][2] = "H";
+
+    arrayResult[4][4] = "M";
+    arrayResult[5][5] = "M";
+
+    arrayResult[7][3] = "H";
+
+    // Create gameboard and place ship
+    let gameboardA = gameboardFactory();
+    gameboardA.placeShip({ x: 1, y: 1, dir: "y" }, 2);
+    gameboardA.placeShip({ x: 7, y: 3, dir: "y" }, 3);
+
+    gameboardA.attack({ x: 1, y: 1 });
+    gameboardA.attack({ x: 1, y: 2 });
+    gameboardA.attack({ x: 4, y: 4 });
+    gameboardA.attack({ x: 5, y: 5 });
+    gameboardA.attack({ x: 7, y: 3 });
+
+    expect(gameboardA.getPublicGrid()).toEqual(arrayResult);
   });
 
   test("Report if all ships have been sunk", () => {
@@ -428,7 +451,7 @@ describe("Gameboard Factory", () => {
     gameboardA.attack(coorHitC);
     gameboardA.attack(coorHitD);
     gameboardA.attack(coorHitE);
-    expect(gameboardA.grid).toEqual(arrayResult);
+    expect(gameboardA.getPrivateGrid()).toEqual(arrayResult);
     expect(gameboardA.isAllHit()).toEqual(true);
   });
 });
@@ -443,7 +466,7 @@ describe("Player Factory", () => {
       type: "Human",
       score: 0,
       gameboard: expect.anything(),
-      takeTurn: expect.anything(),
+      receiveHit: expect.anything(),
     };
     expect(playerFactory("Human")).toMatchObject(obj);
   });
@@ -453,23 +476,20 @@ describe("Player Factory", () => {
       type: "Computer",
       score: 0,
       gameboard: expect.anything(),
-      takeTurn: expect.anything(),
+      receiveHit: expect.anything(),
     };
     expect(playerFactory("Computer")).toMatchObject(obj);
   });
 
   test("Human take turn and hit", () => {
     let human = playerFactory("Human");
-    let computer = playerFactory("Computer");
-    computer.placeShip({ x: 2, y: 5, dir: "x" }, 3);
-    expect(human.takeTurn(computer.gameboard, { x: 3, y: 5 })).toBe("Hit");
+    human.placeShip({ x: 2, y: 5, dir: "x" }, 3);
+    expect(human.receiveHit({ x: 3, y: 5 })).toBe("Hit");
   });
 
   test("Computer take turn", () => {
-    let human = playerFactory("Human");
     let computer = playerFactory("Computer");
     computer.placeShip({ x: 2, y: 5, dir: "x" }, 3);
-    expect(human.takeTurn(computer.gameboard, { x: 3, y: 5 })).toBe("Hit");
+    expect(computer.receiveHit({ x: 3, y: 5 })).toBe("Hit");
   });
-
 });

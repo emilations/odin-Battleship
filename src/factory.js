@@ -78,8 +78,22 @@ function gameboardFactory() {
   //             H: Ship is hit
   //             M: Missed shot
   let grid = Array(10)
-    .fill(0)
+    .fill("0")
     .map(() => Array(10).fill("0"));
+
+  let getPrivateGrid = function () {
+    return JSON.parse(JSON.stringify(grid));
+  };
+
+  // Create the grid from an enemy point of view
+  let getPublicGrid = function () {
+    let publicGrid = grid.map((element) => {
+      return element.map((elem) => {
+        return elem[0] == "H" || elem[0] == "M" ? elem[0] : "0";
+      });
+    });
+    return JSON.parse(JSON.stringify(publicGrid));
+  };
 
   let placeShip = function (coor, shipLength) {
     if (coor.dir == "x" && coor.x + shipLength > 9) {
@@ -132,7 +146,8 @@ function gameboardFactory() {
 
   return {
     shipList,
-    grid: [...grid],
+    getPrivateGrid,
+    getPublicGrid,
     placeShip,
     attack,
     isAllHit,
@@ -141,26 +156,31 @@ function gameboardFactory() {
 
 let playerFactory = function (type) {
   if (type == "Human") {
+    let gameboard = gameboardFactory()
     return {
       type: "Human",
       score: 0,
-      gameboard: gameboardFactory(),
-      placeShip: function(coor, shipLength){
-        this.gameboard.placeShip(coor, shipLength)
+      gameboard,
+      placeShip: function (coor, shipLength) {
+        return this.gameboard.placeShip(coor, shipLength);
       },
-      takeTurn: function (gameboard, coor) {
-        return gameboard.attack(coor)
+      receiveHit: function (coor) {
+        return this.gameboard.attack(coor)
       },
+
     };
   } else if (type == "Computer") {
+    let gameboard = gameboardFactory()
     return {
       type: "Computer",
       score: 0,
-      gameboard: gameboardFactory(),
-      placeShip: function(coor, shipLength){
-        this.gameboard.placeShip(coor, shipLength)
+      gameboard,
+      placeShip: function (coor, shipLength) {
+        return this.gameboard.placeShip(coor, shipLength);
       },
-      takeTurn: function (gameboard, coor) {},
+      receiveHit: function (coor) {
+        return this.gameboard.attack(coor)
+      },
     };
   } else {
     throw new Error("Unsupported type");
