@@ -6,28 +6,41 @@
 body {
   height: 100vh;
   background-color: #ffffff;
-  padding: 1rem;
 }
 
 .main-container {
+  box-sizing: border-box;
+  height: 100%;
   display: grid;
+  grid-auto-flow: row;
+  grid-template-rows: auto auto 1fr auto;
+  grid-template-columns: 1fr 1fr;
+  padding: 1rem;
+  gap: 1rem;
 }
 
+/* HEADER ELEMENTS */
 .header {
   font-family: "Cairo";
   display: grid;
+  grid-column: 1 / 3;
   grid-template-columns: 1fr;
   grid-auto-flow: column;
   gap: 20px;
+  margin-bottom: 2rem;
 }
 
-.header > * {
-  background-color: aqua;
-  padding: 0;
+.header > :not(:first-child) > * {
+  font-size: 1.1rem;
+  line-height: 1.5rem;
+  border-bottom: 0px solid black;
+  transition: all 0.1s ease-in-out;
+  -webkit-transition: all 0.12s ease-in-out;
 }
 
-.header > :not(:first-child) {
-  font-size: small;
+.header > *:not(:first-child) > :hover {
+  border-bottom: 1.4px solid rgb(78, 78, 78);
+  margin-bottom: -1.4px;
 }
 
 .header .title {
@@ -35,11 +48,40 @@ body {
   line-height: 2.2rem;
 }
 
-.header .title h1{
+.header .title h1 {
   width: min-content;
 }
 
-.header >* >*:hover {
+/* MESSAGE ELEMENT */
+.message, .control {
+  justify-self: center;
+  border: 1px solid black;
+}
 
-  border-bottom: 2px solid black;
+/* Grid element */
+.grid {
+  justify-self: center;
+  align-self: center;
+  width: 100%;
+  height: 100%;
+  /* border: 1px solid black; */
+}
+
+.grid-layout {
+  height: 100%;
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  grid-template-rows: repeat(10, 1fr);
+}
+
+/* Cell element */
+.cell-p1 {
+  border: 1px solid black;
+  box-sizing: border-box;
+}
+
+/* Footer element */
+.footer {
+  grid-column: 1 / 3;
+  justify-self: center;
 }
