@@ -1,8 +1,45 @@
 * {
-    padding: 0%;
-    margin: 0%;
+  padding: 0%;
+  margin: 0%;
 }
 
 body {
-    background-color: black;
+  height: 100vh;
+  background-color: #ffffff;
+  padding: 1rem;
+}
+
+.main-container {
+  display: grid;
+}
+
+.header {
+  font-family: "Cairo";
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-auto-flow: column;
+  gap: 20px;
+}
+
+.header > * {
+  background-color: aqua;
+  padding: 0;
+}
+
+.header > :not(:first-child) {
+  font-size: small;
+}
+
+.header .title {
+  font-family: "Cairo";
+  line-height: 2.2rem;
+}
+
+.header .title h1{
+  width: min-content;
+}
+
+.header >* >*:hover {
+
+  border-bottom: 2px solid black;
 }

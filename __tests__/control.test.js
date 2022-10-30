@@ -6,10 +6,10 @@ const { game } = require("../src/control");
 // Ship factory ---------------------------------------------------------------
 describe("Game module", () => {
   test("Start game", () => {
-    expect(game.startGame()).toBe("Game started");
+    expect(game.startGame()).toBe("on");
   })
 
-  test("Start game", () => {
-    expect(game.startGame()).toBe("Game started");
+  test("End game", () => {
+    expect(game.endGame()).toBe("end");
   })
 });

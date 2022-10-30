@@ -7,14 +7,15 @@ let game = (function () {
   let computer = playerFactory("Computer");
 
   let startGame = function () {
-    gameStatus = "ongoing";
+    gameStatus = "on";
     currentPlayer = "Human";
 
-    return "Game started";
+    return gameStatus;
   };
 
   let endGame = function () {
-    gameStatus = "ended"
+    gameStatus = "end"
+    return gameStatus;
   };
 
   let round = function () {
