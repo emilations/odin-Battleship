@@ -53,7 +53,8 @@ body {
 }
 
 /* MESSAGE ELEMENT */
-.message, .control {
+.message,
+.control {
   justify-self: center;
   border: 1px solid black;
 }
@@ -71,15 +72,13 @@ body {
   display: grid;
   grid-template-columns: repeat(10, 1fr);
   grid-template-rows: repeat(10, 1fr);
-  /* border: 2px solid black; */
+  border: solid rgb(75, 75, 75) 1px;
   box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
-  box-sizing: border-box;
 }
 
 /* Cell element */
 .cell-p1 {
-  border: 2px solid black;
-  box-sizing: border-box;
+  border: solid rgb(75, 75, 75) 1px;
 }
 
 /* Footer element */
