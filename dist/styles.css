@@ -59,31 +59,36 @@ body {
   border: 1px solid black;
 }
 
-/* Grid element */
 .grid {
-  justify-self: center;
+  height: 80%;
+  width: 80%;
+  margin: 2rem;
+}
+
+/* Grid element */
+.grid-human {
+  justify-self: end;
   align-self: center;
-  /* width: 100%; */
-  /* height: 100%; */
+}
+
+.grid-computer {
+  justify-self: start;
+  align-self: center;
 }
 
 .grid-layout {
-  height: 100%;
   display: grid;
   grid-template-columns: repeat(10, 1fr);
   grid-template-rows: repeat(10, 1fr);
+  aspect-ratio: 1 /1;
   /* border: solid rgb(75, 75, 75) 3px; */
   box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
 }
 
+
 /* Cell element */
 .cell-p1 {
   border: solid rgb(75, 75, 75) 2px;
-  height: 3rem;
-  min-height: 1rem;
-  width: 3rem;
-  min-width: 1rem;
-
 }
 
 /* Footer element */
@@ -91,4 +96,10 @@ body {
   font-family: "Cairo";
   grid-column: 1 / 3;
   justify-self: center;
+}
+
+@media only screen and (max-width: 600px) {
+  body {
+    background-color: lightblue;
+  }
 }
