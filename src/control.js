@@ -1,4 +1,5 @@
 const { playerFactory } = require("./factory");
+const { placeShip } = require("./view");
 
 let game = (function () {
   let currentPlayer;
@@ -9,7 +10,7 @@ let game = (function () {
   let startGame = function () {
     gameStatus = "on";
     currentPlayer = "Human";
-
+    placeShip(3);
     return gameStatus;
   };
 

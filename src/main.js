@@ -1,1 +1,3 @@
-import { } from "./view"
+import { game } from "./control"
+
+game.startGame()
