@@ -11,7 +11,7 @@ let message = function (message, buttonRotate) {
     messageDOMdiv.append(rotateButton);
   } else if (buttonRotate == "del") {
     let messageDOMdiv = document.querySelector(".message");
-    messageDOMdiv.removeChild(messageDOMdiv.lastChild)
+    messageDOMdiv.removeChild(messageDOMdiv.lastChild);
   }
 };
 
@@ -31,22 +31,25 @@ let displayGrid = (function () {
     if (mode == "placeShip") {
       // add the event listener on each grid
       grid.forEach((elem) => {
+        // cell mouse over
         elem.addEventListener("mouseover", (e) => {
           mouseCoor.x = parseInt(e.target.id[12]);
           mouseCoor.y = parseInt(e.target.id[6]);
           refresh(mode, shipSize);
         });
+        // cell click
         elem.addEventListener("click", (e) => {
           try {
             game.human.placeShip(mouseCoor, shipSize);
           } catch (error) {
             console.log(error.message);
           }
-          message("Ship placed")
-          refresh();
+          message("Ship placed! The next one");
+          refresh("populate")
           refresh(mode, shipSize);
         });
       });
+      // Rotate button
       let rotateButton = document.querySelector(".message > button");
       rotateButton.addEventListener("click", () => {
         rotateShip();
@@ -57,41 +60,48 @@ let displayGrid = (function () {
   let refresh = function (mode, shipSize) {
     // Clear the grid from all the current hightlights
     grid.forEach((elem) =>
-      elem.classList.remove("grid-hover-forced", "grid-hover-outBound")
+      elem.classList.remove("cell-hover-forced", "cell-hover-outBound")
     );
-    if (mode == "placeShip") {
+    // Populate the grid from memory
+    if (mode == "populate") {
+      let humanGrid = game.human.gameboard.getPrivateGrid();
+      humanGrid.forEach((elemRow, x) => {
+        elemRow.forEach((elemCell, y) => {
+          if (elemCell[0] == "S"){
+            console.log(`There is a ship at x:${x} and y: ${y}`)
+            let coorLinear = parseInt(x) + parseInt(y) * 10;
+            grid[coorLinear].classList.add("cell-ship-present")
+          }
+        })
+        }
+      );
+    } else if (mode == "placeShip") {
       // convert from x y to linear coor
       let coorLinear = parseInt(mouseCoor.x) + parseInt(mouseCoor.y) * 10;
-      grid[coorLinear].classList.add("grid-hover-forced");
+      grid[coorLinear].classList.add("cell-hover-forced");
       // Check if ship goes outside the grid
       if (
         (mouseCoor.dir == "x" && mouseCoor.x + shipSize > 10) ||
         (mouseCoor.dir == "y" && mouseCoor.y + shipSize > 10)
       ) {
         // Make the cursor background red
-        grid[coorLinear].classList.add("grid-hover-outBound");
+        grid[coorLinear].classList.add("cell-hover-outBound");
         return;
       }
       // Highlight the grid based on coor and ship size
       if (mouseCoor.dir == "x") {
         let limit = coorLinear + shipSize;
         do {
-          grid[coorLinear].classList.add("grid-hover-forced");
+          grid[coorLinear].classList.add("cell-hover-forced");
           coorLinear++;
         } while (coorLinear < limit);
       } else if (mouseCoor.dir == "y") {
         let limit = coorLinear + 10 * shipSize;
         do {
-          grid[coorLinear].classList.add("grid-hover-forced");
+          grid[coorLinear].classList.add("cell-hover-forced");
           coorLinear += 10;
         } while (coorLinear < limit);
       }
-    } else {
-      let humanGrid = game.human.gameboard.getPrivateGrid();
-      console.log(humanGrid)
-      humanGrid.forEach((elem) => {
-        if (elem[0] == "S"){}
-      });
     }
   };
   let rotateShip = function () {
