@@ -1,14 +1,15 @@
 import { game } from "./control";
 
+// MAN: buttonRotate can be "add" or "del"
 let message = function (message, buttonRotate) {
   let messageDOM = document.querySelector(".message > p");
   messageDOM.innerHTML = message;
-  if (buttonRotate) {
+  if (buttonRotate == "add") {
     let rotateButton = document.createElement("button");
     rotateButton.textContent = "Rotate Ship";
     let messageDOMdiv = document.querySelector(".message");
     messageDOMdiv.append(rotateButton);
-  } else {
+  } else if (buttonRotate == "del") {
     let messageDOMdiv = document.querySelector(".message");
     messageDOMdiv.removeChild(messageDOMdiv.lastChild)
   }
@@ -42,8 +43,7 @@ let displayGrid = (function () {
             console.log(error.message);
           }
           message("Ship placed")
-
-          refresh("ShipPlaced");
+          refresh();
           refresh(mode, shipSize);
         });
       });
@@ -86,9 +86,12 @@ let displayGrid = (function () {
           coorLinear += 10;
         } while (coorLinear < limit);
       }
-    } else if (mode == "shipPlaced") {
-      let humanGrid = game.human.getPrivateGrid();
-      humanGrid.forEach((elem) => {});
+    } else {
+      let humanGrid = game.human.gameboard.getPrivateGrid();
+      console.log(humanGrid)
+      humanGrid.forEach((elem) => {
+        if (elem[0] == "S"){}
+      });
     }
   };
   let rotateShip = function () {

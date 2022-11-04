@@ -13,7 +13,7 @@ let game = (function () {
     gameMode = "placeship";
     currentPlayer = "Human";
     placeShipCounter = 1;
-    message("Place your carrier", true)
+    message("Place your carrier", "add")
     displayGrid.cacheDOM("placeShip");
     displayGrid.addListener("placeShip", shipSize);
     return gameMode;
