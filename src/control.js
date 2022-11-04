@@ -10,12 +10,12 @@ let game = (function () {
   let startGame = function () {
     gameStatus = "on";
     currentPlayer = "Human";
-    placeShip(3);
+    placeShip(5);
     return gameStatus;
   };
 
   let endGame = function () {
-    gameStatus = "end"
+    gameStatus = "end";
     return gameStatus;
   };
 
@@ -32,6 +32,8 @@ let game = (function () {
   return {
     startGame,
     endGame,
+    human,
+    computer,
   };
 })();
 
