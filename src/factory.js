@@ -70,7 +70,6 @@ function shipFactory(shipLength, shipId) {
 function gameboardFactory() {
   let shipIdCounter = 1;
   let shipList = [];
-
   // '0' was chosen to represent an empty slot
   // grid[x][y]
   // grid legend 0: Empty
@@ -80,11 +79,9 @@ function gameboardFactory() {
   let grid = Array(10)
     .fill("0")
     .map(() => Array(10).fill("0"));
-
   let getPrivateGrid = function () {
     return JSON.parse(JSON.stringify(grid));
   };
-
   // Create the grid from an enemy point of view
   let getPublicGrid = function () {
     let publicGrid = grid.map((element) => {
@@ -94,17 +91,14 @@ function gameboardFactory() {
     });
     return JSON.parse(JSON.stringify(publicGrid));
   };
-
   let placeShip = function (coor, shipLength) {
     if (coor.dir == "x" && coor.x + shipLength > 9) {
       throw new Error("Outside of grid");
     } else if (coor.dir == "y" && coor.y + shipLength > 9) {
       throw new Error("Outside of grid");
     }
-
     let shipId = `S${shipIdCounter}`;
     shipIdCounter++;
-
     let ship = shipFactory(shipLength, shipId);
     shipList.push(ship);
     if (coor.dir == "x") {
@@ -121,7 +115,6 @@ function gameboardFactory() {
     return ship;
     // add ship to gameboard array
   };
-
   let attack = function (coor) {
     if (coor.x < 0 || coor.x > 9 || coor.y < 0 || coor.y > 9) {
       throw new Error("Outside of grid");
@@ -139,11 +132,9 @@ function gameboardFactory() {
       return "Miss";
     }
   };
-
   let isAllHit = function () {
     return shipList.every((elem) => elem.isSunk());
   };
-
   return {
     shipList,
     getPrivateGrid,
@@ -156,7 +147,7 @@ function gameboardFactory() {
 
 let playerFactory = function (type) {
   if (type == "Human") {
-    let gameboard = gameboardFactory()
+    let gameboard = gameboardFactory();
     return {
       type: "Human",
       score: 0,
@@ -165,12 +156,11 @@ let playerFactory = function (type) {
         return this.gameboard.placeShip(coor, shipLength);
       },
       receiveHit: function (coor) {
-        return this.gameboard.attack(coor)
+        return this.gameboard.attack(coor);
       },
-
     };
   } else if (type == "Computer") {
-    let gameboard = gameboardFactory()
+    let gameboard = gameboardFactory();
     return {
       type: "Computer",
       score: 0,
@@ -179,7 +169,7 @@ let playerFactory = function (type) {
         return this.gameboard.placeShip(coor, shipLength);
       },
       receiveHit: function (coor) {
-        return this.gameboard.attack(coor)
+        return this.gameboard.attack(coor);
       },
     };
   } else {
