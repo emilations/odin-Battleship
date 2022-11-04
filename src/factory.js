@@ -14,26 +14,21 @@ function shipFactory(shipLength, shipId) {
   if (!shipLength || shipLength > 5 || shipLength <= 1) {
     throw new Error("Length must be between 2 and 5");
   }
-
   // Initialize ship
   let type = shipClasses[shipLength];
   let fuselage = Array(shipLength).fill(true);
   let allCoor = Array();
-
   let getFuselage = function () {
     return [...fuselage];
   };
-
   let getCoor = function () {
     return [...allCoor];
   };
-
   // Save coordinates of ship
   // coor is an object {x, y}
   let setCoor = function (coor) {
     allCoor.push({ x: coor.x, y: coor.y });
   };
-
   // Use coordinates to locate index and then change fuselage state
   let hit = function (coor) {
     let hitSuccess = false;
@@ -45,7 +40,6 @@ function shipFactory(shipLength, shipId) {
     });
     return hitSuccess;
   };
-
   // Evaluate if the ship is all filled with hits
   let isSunk = function () {
     if (fuselage.every((elem) => !elem)) {
@@ -53,7 +47,6 @@ function shipFactory(shipLength, shipId) {
     }
     return false;
   };
-
   return {
     shipId,
     type,
@@ -145,6 +138,7 @@ function gameboardFactory() {
   };
 }
 
+// Player factory -------------------------------------------------------------
 let playerFactory = function (type) {
   if (type == "Human") {
     let gameboard = gameboardFactory();
@@ -177,5 +171,4 @@ let playerFactory = function (type) {
   }
 };
 
-// ----------------------------------------------------------------------------
-module.exports = { shipFactory, gameboardFactory, playerFactory };
+export { playerFactory };

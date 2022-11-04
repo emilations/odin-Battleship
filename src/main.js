@@ -1,3 +1,3 @@
-import { game } from "./control"
+import {game} from "./control"
 
 game.startGame()

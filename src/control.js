@@ -1,21 +1,28 @@
-const { playerFactory } = require("./factory");
-const { displayGrid } = require("./view");
+import { playerFactory } from "./factory";
+import { displayGrid } from "./view";
+
 
 let game = (function () {
   let currentPlayer;
-  let gameStatus;
+  let gameMode;
+  let placeShipCounter;
   let human = playerFactory("Human");
   let computer = playerFactory("Computer");
   let startGame = function () {
-    gameStatus = "on";
+    let shipSize = 5;
+    gameMode = "placeship";
     currentPlayer = "Human";
-    displayGrid.cacheDOM();
-    displayGrid.addListener();
-    return gameStatus;
+    placeShipCounter = 1;
+    displayGrid.cacheDOM("placeShip");
+    displayGrid.addListener("placeShip", shipSize);
+    return gameMode;
   };
   let endGame = function () {
-    gameStatus = "end";
-    return gameStatus;
+    gameMode = "end";
+    return gameMode;
+  };
+  let getGameMode = function () {
+    return gameMode;
   };
   let round = function () {
     if (currentPlayer == "Human") {
@@ -31,7 +38,8 @@ let game = (function () {
     endGame,
     human,
     computer,
+    getGameMode,
   };
 })();
 
-module.exports = { game };
+export { game };
