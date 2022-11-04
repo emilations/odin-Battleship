@@ -59,6 +59,14 @@ body {
   font-family: "Cairo";
   font-size: 2rem;
   padding-top: 1rem;
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.message > button {
+  padding: 0.5rem;
+  font-size: 1.5rem;
 }
 
 .grid {
@@ -137,14 +145,14 @@ body {
 }
 
 /* Placing ship */
-.grid-hover:hover{
+.grid-hover:hover {
   background-color: aquamarine;
 }
 
-.grid-hover-forced{
+.grid-hover-forced {
   background-color: aquamarine;
 }
 
-.grid-hover-outBound{
+.grid-hover-outBound {
   background-color: red;
 }

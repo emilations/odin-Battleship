@@ -1,6 +1,12 @@
-let message = function (message) {
+let message = function (message, buttonRotate) {
   let messageDOM = document.querySelector(".message > p");
   messageDOM.innerHTML = message;
+  if (buttonRotate) {
+    let rotateButton = document.createElement("button");
+    rotateButton.textContent = "Rotate Ship";
+    let messageDOMdiv = document.querySelector(".message");
+    messageDOMdiv.append(rotateButton);
+  }
 };
 
 let displayGrid = (function () {
@@ -9,7 +15,6 @@ let displayGrid = (function () {
     x: 0,
     dir: "x",
   };
-
   let grid;
   let cacheDOM = function (mode) {
     if (mode == "placeShip") {
@@ -27,18 +32,22 @@ let displayGrid = (function () {
         });
         elem.addEventListener("click", (e) => {
           console.log(`Clicked on x:${mouseCoor.x} and y: ${mouseCoor.y}`);
-          refresh();
+          refresh(mode, shipSize);
         });
+      });
+      let rotateButton = document.querySelector(".message > button");
+      rotateButton.addEventListener("click", () => {
+        rotateShip();
+        refresh(mode, shipSize);
       });
     }
   };
-  let rotateButton = function (){
-
-  }
   let refresh = function (mode, shipSize) {
     if (mode == "placeShip") {
       // Clear the grid from all the current hightlights
-      grid.forEach((elem) => elem.classList.remove("grid-hover-forced", "grid-hover-outBound"));
+      grid.forEach((elem) =>
+        elem.classList.remove("grid-hover-forced", "grid-hover-outBound")
+      );
       // convert from x y to linear coor
       let coorLinear = parseInt(mouseCoor.x) + parseInt(mouseCoor.y) * 10;
       grid[coorLinear].classList.add("grid-hover-forced");
@@ -47,11 +56,11 @@ let displayGrid = (function () {
         (mouseCoor.dir == "x" && mouseCoor.x + shipSize > 10) ||
         (mouseCoor.dir == "y" && mouseCoor.y + shipSize > 10)
       ) {
+        // Make the cursor background red
         grid[coorLinear].classList.add("grid-hover-outBound");
-        console.log("Ship extends outside grid")
-        return
+        return;
       }
-      // Highlight the gird based on coor and ship size
+      // Highlight the grid based on coor and ship size
       if (mouseCoor.dir == "x") {
         let limit = coorLinear + shipSize;
         do {
@@ -66,6 +75,10 @@ let displayGrid = (function () {
         } while (coorLinear < limit);
       }
     }
+  };
+  let rotateShip = function () {
+    mouseCoor.dir = mouseCoor.dir == "x" ? "y" : "x";
+    refresh();
   };
   return {
     cacheDOM,

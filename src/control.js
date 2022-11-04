@@ -1,5 +1,5 @@
 import { playerFactory } from "./factory";
-import { displayGrid } from "./view";
+import { displayGrid, message } from "./view";
 
 
 let game = (function () {
@@ -13,6 +13,7 @@ let game = (function () {
     gameMode = "placeship";
     currentPlayer = "Human";
     placeShipCounter = 1;
+    message("Place your carrier", true)
     displayGrid.cacheDOM("placeShip");
     displayGrid.addListener("placeShip", shipSize);
     return gameMode;
