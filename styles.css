@@ -145,14 +145,18 @@ body {
 }
 
 /* Placing ship */
-.grid-hover:hover {
+.cell-hover:hover {
   background-color: aquamarine;
 }
 
-.grid-hover-forced {
+.cell-hover-forced {
   background-color: aquamarine;
 }
 
-.grid-hover-outBound {
+.cell-hover-outBound {
   background-color: red;
+}
+
+.cell-ship-present {
+  background-color: silver;
 }
