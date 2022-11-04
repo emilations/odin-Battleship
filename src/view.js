@@ -3,22 +3,27 @@ let message = function (message) {
   messageDOM.innerHTML = message;
 };
 
+// View function to 
 let placeShip = function (shipSize) {
   let grid = document.querySelectorAll(".grid-left > .grid-layout > .cell-p1");
   let direction = "x";
 
-  // event listner function
+  // Highlight grid when hovering the mouse to place ships
   let highlight = function (e, direction, shipSize) {
+    // Clear the previous highlight if present
     grid.forEach((elem) => elem.classList.remove("grid-hover-forced"))
     let x = parseInt(e.target.id[12]);
     let y = parseInt(e.target.id[6]);
+
+    // Check if ship goes outside the grid
     if ((direction == "x" && x + shipSize > 10) || (direction == "y" && y + shipSize > 10)) {
       throw new Error("Out of bounds");
-    } 
+    }
 
     // convert from x y to linear coor
     let coor = x * 1 + y * 10;
-    
+
+    // Highlight the gird based on coor and ship size
     if (direction == "x") {
       let limit = coor + shipSize;
       do {
@@ -34,10 +39,12 @@ let placeShip = function (shipSize) {
     }
   };
 
-  // event listener function
+  // Event listener to rotate the placement of the ship
   let rotateShip = function () {
     direction = direction == "x" ? "y" : "x";
   };
+
+  // Initiate the event listener on each grid
   let gridListen = function() {
   grid.forEach((elem) => {
     elem.classList.add("grid-hover");
@@ -46,6 +53,8 @@ let placeShip = function (shipSize) {
       highlight(e, direction, shipSize);
     });
   })};
+  
+  // Initiate the place ship
   gridListen()
   window.addEventListener("wheel", rotateShip)
 };
