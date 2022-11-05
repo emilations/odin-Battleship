@@ -1,6 +1,6 @@
 import { game } from "./control";
 
-// MAN: buttonRotate can be "add" or "del"
+// buttonRotate can be "add" or "del"
 let message = function (message, buttonRotate) {
   let messageDOM = document.querySelector(".message > p");
   messageDOM.innerHTML = message;
@@ -39,10 +39,26 @@ let displayGrid = (function () {
         });
         // cell click
         elem.addEventListener("click", (e) => {
+          // do not save if interference
+          let coorLinear = parseInt(mouseCoor.x) + parseInt(mouseCoor.y) * 10;
+          grid[coorLinear].classList.add("cell-hover-forced");
+          for (let i = 0; i < shipSize; i++) {
+            if (
+              (mouseCoor.dir == "x" &&
+                grid[coorLinear + i].classList.contains("cell-ship-present")) ||
+              (mouseCoor.dir == "y" &&
+                grid[coorLinear + i * 10].classList.contains(
+                  "cell-ship-present"
+                ))
+            ) {
+              return console.log("interference");
+            }
+          }
           try {
             game.human.placeShip(mouseCoor, shipSize);
           } catch (error) {
             console.log(error.message);
+            return;
           }
           message("Ship placed! The next one");
           refresh("populate");
@@ -72,7 +88,6 @@ let displayGrid = (function () {
       humanGrid.forEach((elemRow, x) => {
         elemRow.forEach((elemCell, y) => {
           if (elemCell[0] == "S") {
-            console.log(`There is a ship at x:${x} and y: ${y}`);
             let coorLinear = parseInt(x) + parseInt(y) * 10;
             grid[coorLinear].classList.add("cell-ship-present");
           }
@@ -91,6 +106,7 @@ let displayGrid = (function () {
         grid[coorLinear].classList.add("cell-hover-outBound");
         return;
       }
+      // highlight red for interference
       for (let i = 0; i < shipSize; i++) {
         if (
           mouseCoor.dir == "x" &&
@@ -101,9 +117,9 @@ let displayGrid = (function () {
           );
         } else if (
           mouseCoor.dir == "y" &&
-          grid[coorLinear + i*10].classList.contains("cell-ship-present")
+          grid[coorLinear + i * 10].classList.contains("cell-ship-present")
         ) {
-          grid[coorLinear + i*10].classList.add(
+          grid[coorLinear + i * 10].classList.add(
             "cell-ship-highlight-interference"
           );
         }
