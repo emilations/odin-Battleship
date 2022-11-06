@@ -1,21 +1,26 @@
 import { playerFactory } from "./factory";
 import { displayGrid, message } from "./view";
 
-
 let game = (function () {
   let currentPlayer;
   let gameMode;
   let placeShipCounter;
-  let human = playerFactory("Human");
-  let computer = playerFactory("Computer");
+  const shipSizes = [5, 4, 3, 3, 2];
+  const shipClasses = {
+    Carrier: 5,
+    Battleship: 4,
+    Destroyers: 3,
+    Submarine: 3,
+    "Patrol Boat": 2,
+  };
+  const human = playerFactory("Human");
+  const computer = playerFactory("Computer");
   let startGame = function () {
-    let shipSize = 5;
     gameMode = "placeship";
     currentPlayer = "Human";
-    placeShipCounter = 1;
-    message("Place your carrier", "add")
-    displayGrid.cacheDOM("placeShip");
-    displayGrid.addListener("placeShip", shipSize);
+    placeShipCounter = 0;
+    message("Place you carrier captain", "add")
+    placeShipRound()
     return gameMode;
   };
   let endGame = function () {
@@ -25,6 +30,11 @@ let game = (function () {
   let getGameMode = function () {
     return gameMode;
   };
+  let placeShipRound = function () {
+    displayGrid.cacheDOM("placeShip");
+    displayGrid.placeShip("placeShip", shipSizes[placeShipCounter]);
+    placeShipCounter++;
+  }
   let round = function () {
     if (currentPlayer == "Human") {
       let coor = human.receiveTurn();
@@ -40,6 +50,7 @@ let game = (function () {
     human,
     computer,
     getGameMode,
+    placeShipRound
   };
 })();
 

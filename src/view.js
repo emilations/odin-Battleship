@@ -27,7 +27,8 @@ let displayGrid = (function () {
       grid = document.querySelectorAll(".grid-left > .grid-layout > .cell-p1");
     }
   };
-  let addListener = function (mode, shipSize) {
+  let removeAddListener = function () {};
+  let placeShip = function (mode, shipSize) {
     if (mode == "placeShip") {
       // add the event listener on each grid
       grid.forEach((elem) => {
@@ -37,8 +38,7 @@ let displayGrid = (function () {
           mouseCoor.y = parseInt(e.target.id[6]);
           refresh(mode, shipSize);
         });
-        // cell click
-        elem.addEventListener("click", (e) => {
+        let tempfunction = function () {
           // do not save if interference
           let coorLinear = parseInt(mouseCoor.x) + parseInt(mouseCoor.y) * 10;
           grid[coorLinear].classList.add("cell-hover-forced");
@@ -56,21 +56,34 @@ let displayGrid = (function () {
           }
           try {
             game.human.placeShip(mouseCoor, shipSize);
+            console.log(`The ship size is ${shipSize}`)
           } catch (error) {
             console.log(error.message);
             return;
           }
           message("Ship placed! The next one");
+          if (shipSize == 1) {
+            console.log("asd");
+          } else {
+            game.placeShipRound();
+          }
           refresh("populate");
-          refresh(mode, shipSize);
-        });
+          refresh("placeShip", shipSize);
+        };
+        // cell click
+        elem.removeEventListener("click", tempfunction)
+        elem.addEventListener("click", tempfunction);
       });
       // Rotate button
       let rotateButton = document.querySelector(".message > button");
-      rotateButton.addEventListener("click", () => {
+      let rotateShipClick = function () {
+        console.log("Times")
         rotateShip();
-        refresh(mode, shipSize);
-      });
+        refresh("placeShip", shipSize);
+      };
+      rotateButton.removeEventListener("click", rotateShipClick, true)
+      rotateButton.addEventListener("click", rotateShipClick);
+      console.dir(rotateButton)
     }
   };
   let refresh = function (mode, shipSize) {
@@ -145,8 +158,9 @@ let displayGrid = (function () {
   };
   return {
     cacheDOM,
-    addListener,
+    placeShip,
     refresh,
+    removeAddListener,
   };
 })();
 
