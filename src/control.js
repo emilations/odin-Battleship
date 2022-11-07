@@ -21,13 +21,12 @@ let game = (function () {
     placeShip();
   };
   let placeShip = function () {
-    message("Place your carrier Captain", "add");
+    message("", "add");
     displayGrid.configure("placeShip");
     displayGrid.cacheDOM();
     displayGrid.rotateButton("on");
     displayGrid.startHighlightCell("placeShip");
     displayGrid.registerPlaceShipCell();
-    // human.placeShip({x:1,y:1,dir:"y"},5)
   };
   let round = function () {
     if (currentPlayer == "Human") {

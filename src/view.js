@@ -6,6 +6,13 @@ let displayGrid = (function () {
     x: 0,
     dir: "x",
   };
+  let messages = [
+    "Place your carrier captain",
+    "Place your battleship captain",
+    "Place your destroyer captain",
+    "Place your submarine captain",
+    "Place your patrol boat captain"
+  ];
   let shipSizes = [5, 4, 3, 3, 2];
   let shipSizeIndex = 0;
   let gridLeftDOM;
@@ -43,6 +50,8 @@ let displayGrid = (function () {
       }
       // MOUSEOVER highlight cursor and simulate ship presence
       function highlightCursor(e) {
+        message(`${messages[shipSizeIndex]}`)
+
         refresh("highlight");
         let coorLinear = parseInt(mouseCoor.x) + parseInt(mouseCoor.y) * 10;
         // Check if ship is out of bounds
@@ -68,7 +77,7 @@ let displayGrid = (function () {
         } else if (mouseCoor.dir == "y") {
           for (let i = 0; i < shipSizes[shipSizeIndex]; i++) {
             if (humanGrid[mouseCoor.x][mouseCoor.y + i][0] == "S") {
-              gridLeftDOM[coorLinear + (i*10)].classList.add(
+              gridLeftDOM[coorLinear + i * 10].classList.add(
                 "cell-ship-highlight-interference"
               );
             }
