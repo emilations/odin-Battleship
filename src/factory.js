@@ -85,9 +85,9 @@ function gameboardFactory() {
     return JSON.parse(JSON.stringify(publicGrid));
   };
   let placeShip = function (coor, shipLength) {
-    if (coor.dir == "x" && coor.x + shipLength > 9) {
+    if (coor.dir == "x" && coor.x + shipLength > 10) {
       throw new Error("Outside of grid");
-    } else if (coor.dir == "y" && coor.y + shipLength > 9) {
+    } else if (coor.dir == "y" && coor.y + shipLength > 10) {
       throw new Error("Outside of grid");
     }
     let shipId = `S${shipIdCounter}`;

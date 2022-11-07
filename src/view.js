@@ -27,7 +27,7 @@ let displayGrid = (function () {
       gridRight.classList.remove("grid-hide");
     }
   };
-  let highlightCell = function (mode) {
+  let startHighlightCell = function (mode) {
     if (mode == "placeShip") {
       gridLeftDOM.forEach((elem) => {
         elem.addEventListener("mouseover", updateCursor);
@@ -40,7 +40,7 @@ let displayGrid = (function () {
       }
       // MOUSEOVER highlight cursor and simulate ship presence
       function highlightCursor(e) {
-        refresh("highlight")
+        refresh("highlight");
         let coorLinear = parseInt(mouseCoor.x) + parseInt(mouseCoor.y) * 10;
         let shipSize = 5;
         // Check if ship is out of bounds
@@ -64,7 +64,17 @@ let displayGrid = (function () {
       }
     }
   };
-
+  let registerPlaceShipCell = function () {
+    // ---------------------------------------------------------------------------------------------------------------4
+    gridLeftDOM.forEach((elem) => {
+      elem.addEventListener("click", registerShipLocation);
+    });
+    function registerShipLocation(e) {
+      console.log(game.human.placeShip(mouseCoor, 5));
+      console.log(game.human.gameboard.getPrivateGrid())
+      refresh("populate");
+    };
+  };
   let refresh = function (mode) {
     // Reset the grid from any event listener
     if (mode == "reset") {
@@ -84,7 +94,7 @@ let displayGrid = (function () {
         old_elementRight
       );
     } else if (mode == "populate") {
-      let humanGridPublic = game.getGrid("human");
+      let humanGridPublic = game.human.gameboard.getPrivateGrid();
       humanGridPublic.forEach((elemRow, indexX) => {
         elemRow.forEach((eachGrid, indexY) => {
           if (eachGrid[0] == "S") {
@@ -97,19 +107,32 @@ let displayGrid = (function () {
           }
         });
       });
-    } else if ( mode == "highlight") {
-      gridLeftDOM.forEach((elem) => elem.classList.remove("cell-hover", "cell-hover-outBound"))
-      gridRightDOM.forEach((elem) => elem.classList.remove("cell-hover", "cell-hover-outBound"))
+    } else if (mode == "highlight") {
+      gridLeftDOM.forEach((elem) =>
+        elem.classList.remove("cell-hover", "cell-hover-outBound")
+      );
+      gridRightDOM.forEach((elem) =>
+        elem.classList.remove("cell-hover", "cell-hover-outBound")
+      );
     }
   };
-  // -----------------------------------------------------------------------------------------------------------------2
   let rotateShip = function () {
     mouseCoor.dir = mouseCoor.dir == "x" ? "y" : "x";
+    refresh("highlight");
+  };
+  let rotateButton = function (mode) {
+    if (mode == "on") {
+      let rotateButton = document.querySelector(".message > button");
+      rotateButton.addEventListener("click", rotateShip);
+    }
   };
   return {
     cacheDOM,
     configure,
-    highlightCell,
+    startHighlightCell,
+    rotateButton,
+    refresh,
+    registerPlaceShipCell,
   };
 })();
 
@@ -117,11 +140,13 @@ let displayGrid = (function () {
 let message = function (message, buttonRotate) {
   let messageDOM = document.querySelector(".message > p");
   messageDOM.innerHTML = message;
+  // call the function with add to add a button
   if (buttonRotate == "add") {
     let rotateButton = document.createElement("button");
     rotateButton.textContent = "Rotate Ship";
     let messageDOMdiv = document.querySelector(".message");
     messageDOMdiv.append(rotateButton);
+    // call the function with del to delete the button
   } else if (buttonRotate == "del") {
     let messageDOMdiv = document.querySelector(".message");
     messageDOMdiv.removeChild(messageDOMdiv.lastChild);
