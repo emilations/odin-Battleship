@@ -26,6 +26,9 @@ let game = (function () {
     displayGrid.configure("placeShip")
     displayGrid.cacheDOM()
     displayGrid.highlightCell("placeShip")
+    // ------------------------------------------------------------------------------------------3
+    human.gameboard.placeShip({x:1, y:1, dir: "x"}, 3)
+    human.gameboard.attack({x:1, y:1})
   };
   let round = function () {
     if (currentPlayer == "Human") {
