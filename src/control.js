@@ -5,6 +5,8 @@ let game = (function () {
   let currentPlayer;
   let gameMode;
   let placeShipCounter;
+  let human;
+  let computer;
   const shipSizes = [5, 4, 3, 3, 2];
   const shipClasses = {
     Carrier: 5,
@@ -13,28 +15,18 @@ let game = (function () {
     Submarine: 3,
     "Patrol Boat": 2,
   };
-  const human = playerFactory("Human");
-  const computer = playerFactory("Computer");
   let startGame = function () {
-    gameMode = "placeship";
-    currentPlayer = "Human";
-    placeShipCounter = 0;
-    message("Place you carrier captain", "add")
-    placeShipRound()
-    return gameMode;
+    human = playerFactory("Human");
+    computer = playerFactory("Computer");
+    placeShip();
   };
-  let endGame = function () {
-    gameMode = "end";
-    return gameMode;
+
+  let placeShip = function () {
+    message("Place your carrier Captain", "add")
+    displayGrid.configure("placeShip")
+    displayGrid.cacheDOM()
+    displayGrid.highlightCell("placeShip")
   };
-  let getGameMode = function () {
-    return gameMode;
-  };
-  let placeShipRound = function () {
-    displayGrid.cacheDOM("placeShip");
-    displayGrid.placeShip("placeShip", shipSizes[placeShipCounter]);
-    placeShipCounter++;
-  }
   let round = function () {
     if (currentPlayer == "Human") {
       let coor = human.receiveTurn();
@@ -44,13 +36,19 @@ let game = (function () {
     }
     currentPlayer = currentPlayer == "Human" ? "Computer" : "Human";
   };
+  let getGrid = function (player) {
+    if (player == "human") {
+      return JSON.parse(JSON.stringify(human.gameboard.getPrivateGrid()));
+    } else if (player == "computer") {
+      return JSON.parse(JSON.stringify(human.computer.getPrivateGrid()));
+    }
+  };
+  let endGame = function () {};
   return {
     startGame,
     endGame,
-    human,
-    computer,
-    getGameMode,
-    placeShipRound
+    placeShip,
+    getGrid,
   };
 })();
 
