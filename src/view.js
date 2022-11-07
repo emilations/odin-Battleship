@@ -6,6 +6,8 @@ let displayGrid = (function () {
     x: 0,
     dir: "x",
   };
+  let shipSizes = [5, 4, 3, 3, 2];
+  let shipSizeIndex = 0;
   let gridLeftDOM;
   let gridRightDOM;
   let cacheDOM = function () {
@@ -28,6 +30,7 @@ let displayGrid = (function () {
     }
   };
   let startHighlightCell = function (mode) {
+    // be able to highlight interference with already placed ships
     if (mode == "placeShip") {
       gridLeftDOM.forEach((elem) => {
         elem.addEventListener("mouseover", updateCursor);
@@ -42,22 +45,43 @@ let displayGrid = (function () {
       function highlightCursor(e) {
         refresh("highlight");
         let coorLinear = parseInt(mouseCoor.x) + parseInt(mouseCoor.y) * 10;
-        let shipSize = 5;
         // Check if ship is out of bounds
         if (
-          (mouseCoor.dir == "x" && shipSize + parseInt(mouseCoor.x) > 10) ||
-          (mouseCoor.dir == "y" && shipSize + parseInt(mouseCoor.y) > 10)
+          (mouseCoor.dir == "x" &&
+            shipSizes[shipSizeIndex] + parseInt(mouseCoor.x) > 10) ||
+          (mouseCoor.dir == "y" &&
+            shipSizes[shipSizeIndex] + parseInt(mouseCoor.y) > 10)
         ) {
           gridLeftDOM[coorLinear].classList.add("cell-hover-outBound");
           return;
         }
+        // highlight red when a ship already exist
+        let humanGrid = game.human.gameboard.getPrivateGrid();
+        if (mouseCoor.dir == "x") {
+          for (let i = 0; i < shipSizes[shipSizeIndex]; i++) {
+            if (humanGrid[mouseCoor.x + i][mouseCoor.y][0] == "S") {
+              gridLeftDOM[coorLinear + i].classList.add(
+                "cell-ship-highlight-interference"
+              );
+            }
+          }
+        } else if (mouseCoor.dir == "y") {
+          for (let i = 0; i < shipSizes[shipSizeIndex]; i++) {
+            if (humanGrid[mouseCoor.x][mouseCoor.y + i][0] == "S") {
+              gridLeftDOM[coorLinear + (i*10)].classList.add(
+                "cell-ship-highlight-interference"
+              );
+            }
+          }
+        }
+
         // Create ship highlight
         if (mouseCoor.dir == "x") {
-          for (let i = 0; i < shipSize; i++) {
+          for (let i = 0; i < shipSizes[shipSizeIndex]; i++) {
             gridLeftDOM[coorLinear + i].classList.add("cell-hover");
           }
         } else if (mouseCoor.dir == "y") {
-          for (let i = 0; i < shipSize; i++) {
+          for (let i = 0; i < shipSizes[shipSizeIndex]; i++) {
             gridLeftDOM[coorLinear + i * 10].classList.add("cell-hover");
           }
         }
@@ -65,15 +89,15 @@ let displayGrid = (function () {
     }
   };
   let registerPlaceShipCell = function () {
-    // ---------------------------------------------------------------------------------------------------------------4
     gridLeftDOM.forEach((elem) => {
       elem.addEventListener("click", registerShipLocation);
     });
     function registerShipLocation(e) {
-      console.log(game.human.placeShip(mouseCoor, 5));
-      console.log(game.human.gameboard.getPrivateGrid())
+      console.log(game.human.placeShip(mouseCoor, shipSizes[shipSizeIndex]));
+      console.log(game.human.gameboard.getPrivateGrid());
+      shipSizeIndex++;
       refresh("populate");
-    };
+    }
   };
   let refresh = function (mode) {
     // Reset the grid from any event listener
@@ -109,10 +133,18 @@ let displayGrid = (function () {
       });
     } else if (mode == "highlight") {
       gridLeftDOM.forEach((elem) =>
-        elem.classList.remove("cell-hover", "cell-hover-outBound")
+        elem.classList.remove(
+          "cell-hover",
+          "cell-hover-outBound",
+          "cell-ship-highlight-interference"
+        )
       );
       gridRightDOM.forEach((elem) =>
-        elem.classList.remove("cell-hover", "cell-hover-outBound")
+        elem.classList.remove(
+          "cell-hover",
+          "cell-hover-outBound",
+          "cell-ship-highlight-interference"
+        )
       );
     }
   };
