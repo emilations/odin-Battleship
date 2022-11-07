@@ -145,11 +145,8 @@ body {
 }
 
 /* Placing ship */
-.cell-hover:hover {
-  background-color: aquamarine;
-}
 
-.cell-hover-forced {
+.cell-hover {
   background-color: aquamarine;
 }
 
