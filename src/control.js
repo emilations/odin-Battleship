@@ -17,7 +17,6 @@ let game = (function () {
   let startGame = function () {
     human = playerFactory("Human");
     computer = playerFactory("Computer");
-    console.log(human)
     placeShip();
   };
   let placeShip = function () {

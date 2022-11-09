@@ -11,7 +11,7 @@ let displayGrid = (function () {
     "Place your battleship captain",
     "Place your destroyer captain",
     "Place your submarine captain",
-    "Place your patrol boat captain"
+    "Place your patrol boat captain",
   ];
   let shipSizes = [5, 4, 3, 3, 2];
   let shipSizeIndex = 0;
@@ -29,6 +29,7 @@ let displayGrid = (function () {
     let gridLeft = document.querySelector(".grid-left");
     let gridRight = document.querySelector(".grid-right");
     if (mode == "placeShip") {
+      message(`${messages[shipSizeIndex]}`);
       gridLeft.classList.add("grid-middle");
       gridRight.classList.add("grid-hide");
     } else if (mode == "gameOn") {
@@ -50,8 +51,7 @@ let displayGrid = (function () {
       }
       // MOUSEOVER highlight cursor and simulate ship presence
       function highlightCursor(e) {
-        message(`${messages[shipSizeIndex]}`)
-
+        message(`${messages[shipSizeIndex]}`);
         refresh("highlight");
         let coorLinear = parseInt(mouseCoor.x) + parseInt(mouseCoor.y) * 10;
         // Check if ship is out of bounds
@@ -83,7 +83,6 @@ let displayGrid = (function () {
             }
           }
         }
-
         // Create ship highlight
         if (mouseCoor.dir == "x") {
           for (let i = 0; i < shipSizes[shipSizeIndex]; i++) {
@@ -102,9 +101,11 @@ let displayGrid = (function () {
       elem.addEventListener("click", registerShipLocation);
     });
     function registerShipLocation(e) {
-      console.log(game.human.placeShip(mouseCoor, shipSizes[shipSizeIndex]));
-      console.log(game.human.gameboard.getPrivateGrid());
+      message(`${messages[shipSizeIndex]}`);
+      game.human.placeShip(mouseCoor, shipSizes[shipSizeIndex]);
+      game.human.gameboard.getPrivateGrid();
       shipSizeIndex++;
+      message(`${messages[shipSizeIndex]}`);
       refresh("populate");
     }
   };
