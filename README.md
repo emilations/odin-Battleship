@@ -4,4 +4,4 @@ This is an odin project project. The web app is a battleship game designed and c
 
 The app was designed using the MVC approach. It consists of control.js view.js and factory.js. 
 
-factory.js script contains the shipFactory, gameboardFactory and player factory. As the name suggests, these are factory functions required to build the main gameboard and player.
+factory.js script contains the shipFactory, gameboardFactory and player factory. As the name suggests, these are factory functions required to build the main objects of the application.

@@ -101,10 +101,28 @@ let displayGrid = (function () {
       elem.addEventListener("click", registerShipLocation);
     });
     function registerShipLocation(e) {
+      let humanGrid = game.human.gameboard.getPrivateGrid();
+      if (mouseCoor.dir == "x") {
+        for (let i = 0; i < shipSizes[shipSizeIndex]; i++) {
+          if (humanGrid[mouseCoor.x + i][mouseCoor.y][0] == "S") {
+            return
+          }
+        }
+      } else if (mouseCoor.dir == "y") {
+        for (let i = 0; i < shipSizes[shipSizeIndex]; i++) {
+          if (humanGrid[mouseCoor.x][mouseCoor.y + i][0] == "S") {
+            return
+          }
+        }
+      }
       message(`${messages[shipSizeIndex]}`);
       game.human.placeShip(mouseCoor, shipSizes[shipSizeIndex]);
       game.human.gameboard.getPrivateGrid();
       shipSizeIndex++;
+      if (shipSizeIndex >= 5) {
+        console.log("yup")
+        return
+      }
       message(`${messages[shipSizeIndex]}`);
       refresh("populate");
     }
