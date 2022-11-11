@@ -6,14 +6,6 @@ let game = (function () {
   let placeShipCounter;
   let human = playerFactory("Human");
   let computer = playerFactory("Computer");
-  // ------------------------------------------------------------- Not being used, consider removing
-  // const shipClasses = {
-  //   Carrier: 5,
-  //   Battleship: 4,
-  //   Destroyers: 3,
-  //   Submarine: 3,
-  //   "Patrol Boat": 2,
-  // };
   let initiateGame = function () {
     human = playerFactory("Human");
     computer = playerFactory("Computer");
@@ -32,6 +24,8 @@ let game = (function () {
     displayGrid.configure("gameOn");
     displayGrid.refresh("reset");
     displayGrid.refresh("populate");
+    message("You can start with your first hit captain")
+    computer.placeShip();
   };
   let round = function () {
     if (currentPlayer == "Human") {
@@ -195,7 +189,6 @@ let displayGrid = (function () {
     if (mode == "reset") {
       // Left side
       let old_elementLeft = document.querySelector(".grid-left > .grid-layout");
-      console.log(old_elementLeft);
       let new_elementLeft = old_elementLeft.cloneNode(true);
       old_elementLeft.parentNode.replaceChild(new_elementLeft, old_elementLeft);
       // Right side

@@ -159,8 +159,24 @@ let playerFactory = function (type) {
       type: "Computer",
       score: 0,
       gameboard,
-      placeShip: function (coor, shipLength) {
-        return this.gameboard.placeShip(coor, shipLength);
+      placeShip: function () {
+        // randomly places ships into the gameboard grip
+        console.log("Computer placing ship")
+        let shipLength = [5,4,3,3,2];
+        let i = 0;
+        do {
+          let x = Math.floor(Math.random()*9);
+          let y = Math.floor(Math.random()*9);
+          let dir = Math.floor(Math.random()*2) == 0 ? "x" : "y";
+          console.log(`Coor: ${x}:${y} and dir: ${dir} and ship size: ${shipLength[i]}`)
+          try {
+            gameboard.placeShip({x,y,dir},shipLength[i])
+          } catch (error) {
+            i--;
+            console.log(error.message)
+          }
+          i++;
+        } while (i < 5);
       },
       receiveHit: function (coor) {
         return this.gameboard.attack(coor);
