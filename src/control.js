@@ -13,7 +13,7 @@ let game = (function () {
     computer = playerFactory("Computer");
     placeShip();
   };
-  // Starts the placeship MODE 
+  // Starts the placeship MODE
   let placeShip = function () {
     displayGrid.configure("placeShip");
     displayGrid.cacheDOM();
@@ -28,8 +28,6 @@ let game = (function () {
     displayGrid.refresh("populate");
     message("You can start with your first hit captain");
     computer.placeShip();
-    // REMOVES THIS WHEN DONE ------------------------------------------------------------------------------------
-    console.log(computer.gameboard.getPrivateGrid());
     displayGrid.cacheDOM();
     displayGrid.attackListenerCell();
   };
@@ -196,7 +194,7 @@ let displayGrid = (function () {
       elem.addEventListener("click", attackCell);
     });
     function attackCell() {
-      computer.gameboard.attack(mouseCoor)
+      computer.gameboard.attack(mouseCoor);
       refresh("populate");
     }
   };
@@ -233,11 +231,14 @@ let displayGrid = (function () {
       let computerGridPublic = computer.gameboard.getPublicGrid();
       computerGridPublic.forEach((elemRow, indexX) => {
         elemRow.forEach((eachGrid, indexY) => {
+          let coorLinear = parseInt(indexX) + parseInt(indexY) * 10;
           if (eachGrid[0] == "H") {
-            let coorLinear = parseInt(indexX) + parseInt(indexY) * 10;
             gridRightDOM[coorLinear].classList.add("cell-ship-present");
             gridRightDOM[coorLinear].textContent = "X";
-          }
+          } else if (eachGrid[0] == "M") {
+            gridRightDOM[coorLinear].classList.add("cell-ship-missed");
+            gridRightDOM[coorLinear].textContent = "M";
+          };;
         });
       });
     } else if (mode == "highlight") {

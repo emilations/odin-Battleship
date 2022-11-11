@@ -162,3 +162,7 @@ body {
   background-color: red;
 }
 
+/* Attacking ship */
+.cell-ship-missed {
+  background-color: aqua;
+}
