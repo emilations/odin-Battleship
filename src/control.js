@@ -6,25 +6,32 @@ let game = (function () {
   let placeShipCounter;
   let human = playerFactory("Human");
   let computer = playerFactory("Computer");
-  const shipClasses = {
-    Carrier: 5,
-    Battleship: 4,
-    Destroyers: 3,
-    Submarine: 3,
-    "Patrol Boat": 2,
-  };
-  let startGame = function () {
+  // ------------------------------------------------------------- Not being used, consider removing
+  // const shipClasses = {
+  //   Carrier: 5,
+  //   Battleship: 4,
+  //   Destroyers: 3,
+  //   Submarine: 3,
+  //   "Patrol Boat": 2,
+  // };
+  let initiateGame = function () {
     human = playerFactory("Human");
     computer = playerFactory("Computer");
     placeShip();
   };
   let placeShip = function () {
-    message("", "add");
     displayGrid.configure("placeShip");
     displayGrid.cacheDOM();
     displayGrid.rotateButton("on");
     displayGrid.startHighlightCell("placeShip");
     displayGrid.registerPlaceShipCell();
+  };
+  // Removes the placeship configuration then computer places its ships.
+  let startGame = function () {
+    // ----------------------------------------------------------------------------------1
+    displayGrid.configure("gameOn");
+    displayGrid.refresh("reset");
+    displayGrid.refresh("populate");
   };
   let round = function () {
     if (currentPlayer == "Human") {
@@ -44,6 +51,7 @@ let game = (function () {
   };
   let endGame = function () {};
   return {
+    initiateGame,
     startGame,
     endGame,
     placeShip,
@@ -82,10 +90,12 @@ let displayGrid = (function () {
     let gridLeft = document.querySelector(".grid-left");
     let gridRight = document.querySelector(".grid-right");
     if (mode == "placeShip") {
+      message("", "add");
       message(`${messages[shipSizeIndex]}`);
       gridLeft.classList.add("grid-middle");
       gridRight.classList.add("grid-hide");
     } else if (mode == "gameOn") {
+      message("", "del");
       gridLeft.classList.remove("grid-middle");
       gridRight.classList.remove("grid-hide");
     }
@@ -158,13 +168,13 @@ let displayGrid = (function () {
       if (mouseCoor.dir == "x") {
         for (let i = 0; i < shipSizes[shipSizeIndex]; i++) {
           if (humanGrid[mouseCoor.x + i][mouseCoor.y][0] == "S") {
-            return
+            return;
           }
         }
       } else if (mouseCoor.dir == "y") {
         for (let i = 0; i < shipSizes[shipSizeIndex]; i++) {
           if (humanGrid[mouseCoor.x][mouseCoor.y + i][0] == "S") {
-            return
+            return;
           }
         }
       }
@@ -172,26 +182,24 @@ let displayGrid = (function () {
       game.human.placeShip(mouseCoor, shipSizes[shipSizeIndex]);
       game.human.gameboard.getPrivateGrid();
       shipSizeIndex++;
-      if (shipSizeIndex >= 5) {
-        console.log("yup")
-        
-        return
-      }
-      message(`${messages[shipSizeIndex]}`);
       refresh("populate");
+      message(`${messages[shipSizeIndex]}`);
+      if (shipSizeIndex >= 5) {
+        // ----------------------------------------------------------------------------------------------------------------2
+        game.startGame();
+      }
     }
   };
   let refresh = function (mode) {
     // Reset the grid from any event listener
     if (mode == "reset") {
       // Left side
-      let old_elementLeft = document.getElementById(
-        ".grid-left > .grid-layout"
-      );
+      let old_elementLeft = document.querySelector(".grid-left > .grid-layout");
+      console.log(old_elementLeft);
       let new_elementLeft = old_elementLeft.cloneNode(true);
       old_elementLeft.parentNode.replaceChild(new_elementLeft, old_elementLeft);
       // Right side
-      let old_elementRight = document.getElementById(
+      let old_elementRight = document.querySelector(
         ".grid-right > .grid-layout"
       );
       let new_elementRight = old_elementRight.cloneNode(true);
