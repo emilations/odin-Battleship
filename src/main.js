@@ -7,4 +7,4 @@ game.initiateGame()
 // U2 Add Animation to the gird configuration change
 
 // Bugs to fix
-// B1- 
+// B1- Fix bug where computer places its ships one above the other

@@ -26,6 +26,7 @@ let game = (function () {
     displayGrid.refresh("populate");
     message("You can start with your first hit captain")
     computer.placeShip();
+    console.log(computer.gameboard.getPrivateGrid())
   };
   let round = function () {
     if (currentPlayer == "Human") {

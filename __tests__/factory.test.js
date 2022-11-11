@@ -1,8 +1,4 @@
-const {
-  shipFactory,
-  gameboardFactory,
-  playerFactory,
-} = require("../src/factory");
+import { playerFactory, gameboardFactory, shipFactory } from "./../src/factory";
 
 // ----------------------------------------------------------------------------
 // Ship factory ---------------------------------------------------------------

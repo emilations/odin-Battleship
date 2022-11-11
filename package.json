@@ -18,6 +18,11 @@
   "bugs": {
     "url": "https://github.com/emilations/odin-Battleship/issues"
   },
+  "jest": {
+    "transform": {
+      "^.+\\.[t|j]sx?$": "babel-jest"
+    }
+  },
   "homepage": "https://github.com/emilations/odin-Battleship#readme",
   "devDependencies": {
     "@babel/core": "^7.19.3",
