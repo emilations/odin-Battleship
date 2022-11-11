@@ -89,20 +89,16 @@ describe("Gameboard Factory", () => {
     arrayResult[2][6] = "S1";
     arrayResult[3][6] = "S1";
     arrayResult[4][6] = "S1";
-
     // coordonates X, Y, direction
     let coorA = {
       x: 2,
       y: 6,
       dir: "x",
     };
-
     // Create a gameboard
     let gameboardA = gameboardFactory();
-
     // Launch test
     gameboardA.placeShip(coorA, 3);
-
     expect(gameboardA.getPrivateGrid()).toEqual(arrayResult);
   });
 
@@ -121,20 +117,17 @@ describe("Gameboard Factory", () => {
     arrayResult[3][9] = "S2";
     arrayResult[4][9] = "S2";
     arrayResult[5][9] = "S2";
-
     // coordonates X, Y, direction
     let coorA = {
       x: 5,
       y: 1,
       dir: "y",
     };
-
     let coorB = {
       x: 1,
       y: 9,
       dir: "x",
     };
-
     // Create a gameboard
     let gameboardA = gameboardFactory();
     gameboardA.placeShip(coorA, 3);
@@ -150,10 +143,8 @@ describe("Gameboard Factory", () => {
       y: 2,
       dir: "x",
     };
-
     // Create a gameboard
     let gameboardA = gameboardFactory();
-
     // Launch test
     expect(() => gameboardA.placeShip(coorA, 5)).toThrow("Outside of grid");
   });
@@ -165,11 +156,31 @@ describe("Gameboard Factory", () => {
       y: 8,
       dir: "y",
     };
-
     // Create a gameboard
     let gameboardA = gameboardFactory();
     // Launch test
     expect(() => gameboardA.placeShip(coorA, 3)).toThrow("Outside of grid");
+  });
+
+  test("Prevent to place ship on existing ship", () => {
+    // coordonates X, Y, direction
+    let coorA = {
+      x: 1,
+      y: 1,
+      dir: "x",
+    };
+    let coorB = {
+      x: 5,
+      y: 5,
+      dir: "y",
+    };
+    // Create a gameboard
+    let gameboardA = gameboardFactory();
+    // Launch test
+    gameboardA.placeShip(coorA, 3);
+    gameboardA.placeShip(coorB, 3);
+    expect(() => gameboardA.placeShip(coorA, 3)).toThrow("Interference");
+    expect(() => gameboardA.placeShip(coorB, 3)).toThrow("Interference");
   });
 
   test("Attack ship", () => {
@@ -179,22 +190,18 @@ describe("Gameboard Factory", () => {
       .map(() => Array(10).fill("0"));
     arrayResult[1][1] = "S1";
     arrayResult[1][2] = "H1";
-
     let coorShip = {
       x: 1,
       y: 1,
       dir: "y",
     };
-
     let coorHit = {
       x: 1,
       y: 2,
     };
-
     // Create gameboard and place ship
     let gameboardA = gameboardFactory();
     gameboardA.placeShip(coorShip, 2);
-
     expect(gameboardA.attack(coorHit)).toBe("Hit");
     expect(gameboardA.getPrivateGrid()).toEqual(arrayResult);
     expect(gameboardA.shipList[0].getFuselage()).toEqual([true, false]);
@@ -207,45 +214,37 @@ describe("Gameboard Factory", () => {
       .map(() => Array(10).fill("0"));
     arrayResult[1][1] = "S1";
     arrayResult[1][2] = "S1";
-
     arrayResult[3][6] = "S2";
     arrayResult[4][6] = "S2";
     arrayResult[5][6] = "S2";
     arrayResult[6][6] = "S2";
     arrayResult[7][6] = "S2";
-
     arrayResult[7][3] = "H3";
     arrayResult[7][4] = "S3";
     arrayResult[7][5] = "H3";
-
     let coorShipA = {
       x: 1,
       y: 1,
       dir: "y",
     };
-
     let coorShipB = {
       x: 3,
       y: 6,
       dir: "x",
     };
-
     let coorShipC = {
       x: 7,
       y: 3,
       dir: "y",
     };
-
     let coorHitA = {
       x: 7,
       y: 3,
     };
-
     let coorHitB = {
       x: 7,
       y: 5,
     };
-
     // Create gameboard and place ship
     let gameboardA = gameboardFactory();
     gameboardA.placeShip(coorShipA, 2);
@@ -263,16 +262,13 @@ describe("Gameboard Factory", () => {
       y: 1,
       dir: "y",
     };
-
     let coorHit = {
       x: 1,
       y: 2,
     };
-
     // Create gameboard and place ship
     let gameboardA = gameboardFactory();
     gameboardA.placeShip(coorShip, 2);
-
     expect(gameboardA.attack(coorHit)).toBe("Hit");
     expect(gameboardA.attack(coorHit)).toBe("Already hit");
   });
@@ -283,16 +279,13 @@ describe("Gameboard Factory", () => {
       y: 1,
       dir: "y",
     };
-
     let coorHit = {
       x: 2,
       y: 2,
     };
-
     // Create gameboard and place ship
     let gameboardA = gameboardFactory();
     gameboardA.placeShip(coorShip, 2);
-
     expect(gameboardA.attack(coorHit)).toBe("Miss");
   });
 
@@ -304,22 +297,18 @@ describe("Gameboard Factory", () => {
     arrayResult[1][1] = "S1";
     arrayResult[1][2] = "S1";
     arrayResult[2][2] = "M";
-
     let coorShip = {
       x: 1,
       y: 1,
       dir: "y",
     };
-
     let coorHit = {
       x: 2,
       y: 2,
     };
-
     // Create gameboard and place ship
     let gameboardA = gameboardFactory();
     gameboardA.placeShip(coorShip, 2);
-
     expect(gameboardA.attack(coorHit)).toBe("Miss");
     expect(gameboardA.getPrivateGrid()).toEqual(arrayResult);
   });
@@ -330,16 +319,13 @@ describe("Gameboard Factory", () => {
       y: 1,
       dir: "y",
     };
-
     let coorHit = {
       x: 9,
       y: 10,
     };
-
     // Create gameboard and place ship
     let gameboardA = gameboardFactory();
     gameboardA.placeShip(coorShip, 2);
-
     expect(() => gameboardA.attack(coorHit)).toThrow("Outside of grid");
   });
 
@@ -349,16 +335,13 @@ describe("Gameboard Factory", () => {
       y: 1,
       dir: "y",
     };
-
     let coorHit = {
       x: -1,
       y: 5,
     };
-
     // Create gameboard and place ship
     let gameboardA = gameboardFactory();
     gameboardA.placeShip(coorShip, 2);
-
     expect(() => gameboardA.attack(coorHit)).toThrow("Outside of grid");
   });
 
@@ -369,23 +352,18 @@ describe("Gameboard Factory", () => {
       .map(() => Array(10).fill("0"));
     arrayResult[1][1] = "H";
     arrayResult[1][2] = "H";
-
     arrayResult[4][4] = "M";
     arrayResult[5][5] = "M";
-
     arrayResult[7][3] = "H";
-
     // Create gameboard and place ship
     let gameboardA = gameboardFactory();
     gameboardA.placeShip({ x: 1, y: 1, dir: "y" }, 2);
     gameboardA.placeShip({ x: 7, y: 3, dir: "y" }, 3);
-
     gameboardA.attack({ x: 1, y: 1 });
     gameboardA.attack({ x: 1, y: 2 });
     gameboardA.attack({ x: 4, y: 4 });
     gameboardA.attack({ x: 5, y: 5 });
     gameboardA.attack({ x: 7, y: 3 });
-
     expect(gameboardA.getPublicGrid()).toEqual(arrayResult);
   });
 
@@ -396,48 +374,39 @@ describe("Gameboard Factory", () => {
       .map(() => Array(10).fill("0"));
     arrayResult[1][1] = "H1";
     arrayResult[1][2] = "H1";
-
     arrayResult[7][3] = "H2";
     arrayResult[7][4] = "H2";
     arrayResult[7][5] = "H2";
-
     let coorShipA = {
       x: 1,
       y: 1,
       dir: "y",
     };
-
     let coorShipB = {
       x: 7,
       y: 3,
       dir: "y",
     };
-
     let coorHitA = {
       x: 1,
       y: 1,
     };
-
     let coorHitB = {
       x: 1,
       y: 2,
     };
-
     let coorHitC = {
       x: 7,
       y: 3,
     };
-
     let coorHitD = {
       x: 7,
       y: 4,
     };
-
     let coorHitE = {
       x: 7,
       y: 5,
     };
-
     // Create gameboard and place ship
     let gameboardA = gameboardFactory();
     gameboardA.placeShip(coorShipA, 2);
@@ -481,11 +450,5 @@ describe("Player Factory", () => {
     let human = playerFactory("Human");
     human.placeShip({ x: 2, y: 5, dir: "x" }, 3);
     expect(human.receiveHit({ x: 3, y: 5 })).toBe("Hit");
-  });
-
-  test("Computer take turn", () => {
-    let computer = playerFactory("Computer");
-    computer.placeShip({ x: 2, y: 5, dir: "x" }, 3);
-    expect(computer.receiveHit({ x: 3, y: 5 })).toBe("Hit");
   });
 });

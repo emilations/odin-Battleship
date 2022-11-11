@@ -90,8 +90,21 @@ function gameboardFactory() {
     } else if (coor.dir == "y" && coor.y + shipLength > 10) {
       throw new Error("Outside of grid");
     }
+    // -----------------------------------------------------------------------------------------2
     // Check if no overlap with other ship
-
+    if (coor.dir == "x") {
+      for (let i = 0; i < shipLength; i++) {
+        if (grid[coor.x + i][coor.y][0] == "S") {
+          throw new Error("Interference")
+        }
+      }
+    } else if (coor.dir == "y") {
+      for (let i = 0; i < shipLength; i++) {
+        if (grid[coor.x][coor.y + i][0] == "S") {
+          throw new Error("Interference")
+        }
+      }
+    } 
     let shipId = `S${shipIdCounter}`;
     shipIdCounter++;
     let ship = shipFactory(shipLength, shipId);

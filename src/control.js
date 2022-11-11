@@ -160,6 +160,7 @@ let displayGrid = (function () {
     });
     function registerShipLocation(e) {
       let humanGrid = game.human.gameboard.getPrivateGrid();
+      // Check if any interference with another already placed ship
       if (mouseCoor.dir == "x") {
         for (let i = 0; i < shipSizes[shipSizeIndex]; i++) {
           if (humanGrid[mouseCoor.x + i][mouseCoor.y][0] == "S") {
