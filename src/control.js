@@ -1,16 +1,19 @@
 import { playerFactory } from "./factory";
 
+let human = playerFactory("Human");
+let computer = playerFactory("Computer");
+
+// This game module using to control the main event of the game
 let game = (function () {
   let currentPlayer;
   let gameMode;
   let placeShipCounter;
-  let human = playerFactory("Human");
-  let computer = playerFactory("Computer");
   let initiateGame = function () {
     human = playerFactory("Human");
     computer = playerFactory("Computer");
     placeShip();
   };
+  // Starts the placeship MODE 
   let placeShip = function () {
     displayGrid.configure("placeShip");
     displayGrid.cacheDOM();
@@ -18,15 +21,17 @@ let game = (function () {
     displayGrid.startHighlightCell("placeShip");
     displayGrid.registerPlaceShipCell();
   };
-  // Removes the placeship configuration then computer places its ships.
+  // Stops the placeship MODE and start Game MODE
   let startGame = function () {
-    // ----------------------------------------------------------------------------------1
     displayGrid.configure("gameOn");
     displayGrid.refresh("reset");
     displayGrid.refresh("populate");
-    message("You can start with your first hit captain")
+    message("You can start with your first hit captain");
     computer.placeShip();
-    console.log(computer.gameboard.getPrivateGrid())
+    // REMOVES THIS WHEN DONE ------------------------------------------------------------------------------------
+    console.log(computer.gameboard.getPrivateGrid());
+    displayGrid.cacheDOM();
+    displayGrid.attackListenerCell();
   };
   let round = function () {
     if (currentPlayer == "Human") {
@@ -51,8 +56,6 @@ let game = (function () {
     endGame,
     placeShip,
     getGrid,
-    human,
-    computer,
   };
 })();
 
@@ -73,6 +76,12 @@ let displayGrid = (function () {
   let shipSizeIndex = 0;
   let gridLeftDOM;
   let gridRightDOM;
+  // MOUSEOVER update cursor coordinates when hovering above grid for mouseover event
+  // listeners used for startHighlightCell and attackListenerCell
+  let updateCursor = function (e) {
+    mouseCoor.x = parseInt(e.target.id[12]);
+    mouseCoor.y = parseInt(e.target.id[6]);
+  };
   let cacheDOM = function () {
     gridLeftDOM = document.querySelectorAll(
       ".grid-left > .grid-layout > .cell-p1"
@@ -102,11 +111,6 @@ let displayGrid = (function () {
         elem.addEventListener("mouseover", updateCursor);
         elem.addEventListener("mouseover", highlightCursor);
       });
-      // MOUSEOVER update cursor coordinates when hovering above grid
-      function updateCursor(e) {
-        mouseCoor.x = parseInt(e.target.id[12]);
-        mouseCoor.y = parseInt(e.target.id[6]);
-      }
       // MOUSEOVER highlight cursor and simulate ship presence
       function highlightCursor(e) {
         message(`${messages[shipSizeIndex]}`);
@@ -123,7 +127,7 @@ let displayGrid = (function () {
           return;
         }
         // highlight red when a ship already exist
-        let humanGrid = game.human.gameboard.getPrivateGrid();
+        let humanGrid = human.gameboard.getPrivateGrid();
         if (mouseCoor.dir == "x") {
           for (let i = 0; i < shipSizes[shipSizeIndex]; i++) {
             if (humanGrid[mouseCoor.x + i][mouseCoor.y][0] == "S") {
@@ -159,7 +163,7 @@ let displayGrid = (function () {
       elem.addEventListener("click", registerShipLocation);
     });
     function registerShipLocation(e) {
-      let humanGrid = game.human.gameboard.getPrivateGrid();
+      let humanGrid = human.gameboard.getPrivateGrid();
       // Check if any interference with another already placed ship
       if (mouseCoor.dir == "x") {
         for (let i = 0; i < shipSizes[shipSizeIndex]; i++) {
@@ -175,15 +179,25 @@ let displayGrid = (function () {
         }
       }
       message(`${messages[shipSizeIndex]}`);
-      game.human.placeShip(mouseCoor, shipSizes[shipSizeIndex]);
-      game.human.gameboard.getPrivateGrid();
+      human.placeShip(mouseCoor, shipSizes[shipSizeIndex]);
+      human.gameboard.getPrivateGrid();
       shipSizeIndex++;
       refresh("populate");
       message(`${messages[shipSizeIndex]}`);
       if (shipSizeIndex >= 5) {
-        // ----------------------------------------------------------------------------------------------------------------2
         game.startGame();
       }
+    }
+  };
+  let attackListenerCell = function () {
+    // --------------------------------------------------------------------------------------------------------------------1
+    gridRightDOM.forEach((elem) => {
+      elem.addEventListener("mouseover", updateCursor);
+      elem.addEventListener("click", attackCell);
+    });
+    function attackCell() {
+      computer.gameboard.attack(mouseCoor)
+      refresh("populate");
     }
   };
   let refresh = function (mode) {
@@ -203,8 +217,8 @@ let displayGrid = (function () {
         old_elementRight
       );
     } else if (mode == "populate") {
-      let humanGridPublic = game.human.gameboard.getPrivateGrid();
-      humanGridPublic.forEach((elemRow, indexX) => {
+      let humanGridPrivate = human.gameboard.getPrivateGrid();
+      humanGridPrivate.forEach((elemRow, indexX) => {
         elemRow.forEach((eachGrid, indexY) => {
           if (eachGrid[0] == "S") {
             let coorLinear = parseInt(indexX) + parseInt(indexY) * 10;
@@ -213,6 +227,16 @@ let displayGrid = (function () {
             let coorLinear = parseInt(indexX) + parseInt(indexY) * 10;
             gridLeftDOM[coorLinear].classList.add("cell-ship-present");
             gridLeftDOM[coorLinear].textContent = "X";
+          }
+        });
+      });
+      let computerGridPublic = computer.gameboard.getPublicGrid();
+      computerGridPublic.forEach((elemRow, indexX) => {
+        elemRow.forEach((eachGrid, indexY) => {
+          if (eachGrid[0] == "H") {
+            let coorLinear = parseInt(indexX) + parseInt(indexY) * 10;
+            gridRightDOM[coorLinear].classList.add("cell-ship-present");
+            gridRightDOM[coorLinear].textContent = "X";
           }
         });
       });
@@ -250,6 +274,7 @@ let displayGrid = (function () {
     rotateButton,
     refresh,
     registerPlaceShipCell,
+    attackListenerCell,
   };
 })();
 
