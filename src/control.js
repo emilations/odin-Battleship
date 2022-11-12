@@ -5,7 +5,7 @@ let computer = playerFactory("Computer");
 
 // This game module using to control the main event of the game
 let game = (function () {
-  let currentPlayer;
+  let currentPlayer = "Human";
   let gameMode;
   let placeShipCounter;
   let initiateGame = function () {
@@ -23,22 +23,29 @@ let game = (function () {
   };
   // Stops the placeship MODE and start Game MODE
   let startGame = function () {
+    // Setup the layouts
     displayGrid.configure("gameOn");
     displayGrid.refresh("reset");
     displayGrid.refresh("populate");
     message("You can start with your first hit captain");
+    // make the computer place its ship randomly
     computer.placeShip();
-    displayGrid.cacheDOM();
-    displayGrid.attackListenerCell();
+    // Start the rounds
+    round();
   };
+  // --------------------------------------------------------------------------------------------2
   let round = function () {
     if (currentPlayer == "Human") {
-      let coor = human.receiveTurn();
+      currentPlayer = currentPlayer == "Human" ? "Computer" : "Human";
+      console.log("human turn")
+      displayGrid.cacheDOM();
+      displayGrid.attackListenerCell();
+    } else if (currentPlayer == "Computer") {
+      currentPlayer = currentPlayer == "Human" ? "Computer" : "Human";
+      console.log("computer turn")
+      displayGrid.refresh("reset");
+      computer.attack()
     }
-    if (currentPlayer == "Computer") {
-      let coor = computer.receiveTurn();
-    }
-    currentPlayer = currentPlayer == "Human" ? "Computer" : "Human";
   };
   let getGrid = function (player) {
     if (player == "human") {
@@ -54,6 +61,7 @@ let game = (function () {
     endGame,
     placeShip,
     getGrid,
+    round,
   };
 })();
 
@@ -188,7 +196,6 @@ let displayGrid = (function () {
     }
   };
   let attackListenerCell = function () {
-    // --------------------------------------------------------------------------------------------------------------------1
     gridRightDOM.forEach((elem) => {
       elem.addEventListener("mouseover", updateCursor);
       elem.addEventListener("click", attackCell);
@@ -196,6 +203,7 @@ let displayGrid = (function () {
     function attackCell() {
       computer.gameboard.attack(mouseCoor);
       refresh("populate");
+      game.round();
     }
   };
   let refresh = function (mode) {
@@ -215,6 +223,7 @@ let displayGrid = (function () {
         old_elementRight
       );
     } else if (mode == "populate") {
+      // --------------------------------------------------------------------------------------------------------------------1
       let humanGridPrivate = human.gameboard.getPrivateGrid();
       humanGridPrivate.forEach((elemRow, indexX) => {
         elemRow.forEach((eachGrid, indexY) => {
@@ -225,6 +234,10 @@ let displayGrid = (function () {
             let coorLinear = parseInt(indexX) + parseInt(indexY) * 10;
             gridLeftDOM[coorLinear].classList.add("cell-ship-present");
             gridLeftDOM[coorLinear].textContent = "X";
+          } else if (eachGrid[0] == "M") {
+            let coorLinear = parseInt(indexX) + parseInt(indexY) * 10;
+            gridLeftDOM[coorLinear].classList.add("cell-ship-present");
+            gridLeftDOM[coorLinear].textContent = "M";
           }
         });
       });
@@ -238,7 +251,7 @@ let displayGrid = (function () {
           } else if (eachGrid[0] == "M") {
             gridRightDOM[coorLinear].classList.add("cell-ship-missed");
             gridRightDOM[coorLinear].textContent = "M";
-          };;
+          }
         });
       });
     } else if (mode == "highlight") {
@@ -296,4 +309,4 @@ let message = function (message, buttonRotate) {
   }
 };
 
-export { game };
+export { game, human };

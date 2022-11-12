@@ -1,3 +1,7 @@
+// import { HotModuleReplacementPlugin } from "webpack";
+import { game, human } from "./control";
+
+
 // Shared variables
 let shipClasses = {
   2: "Patrol Boat",
@@ -193,6 +197,21 @@ let playerFactory = function (type) {
       receiveHit: function (coor) {
         return this.gameboard.attack(coor);
       },
+      attack: function() {
+        // ----------------------------------------------------------------------------------------------3
+        let loop = false;
+        do {
+          let x = Math.floor(Math.random()*9);
+          let y = Math.floor(Math.random()*9);
+          let coor = {x, y}
+          try {
+            human.receiveHit(coor)
+          } catch (error) {
+            loop = true
+          }
+        } while (loop);
+        game.round()
+      }
     };
   } else {
     throw new Error("Unsupported type");
