@@ -38,6 +38,7 @@ function shipFactory(shipLength, shipId) {
     let hitSuccess = false;
     allCoor.forEach((elem, index) => {
       if (JSON.stringify(elem) == JSON.stringify(coor)) {
+        console.log("herer")
         fuselage[index] = false;
         hitSuccess = true;
       }
@@ -128,6 +129,7 @@ function gameboardFactory() {
     // add ship to gameboard array
   };
   let attack = function (coor) {
+    console.log("attacked")
     if (coor.x < 0 || coor.x > 9 || coor.y < 0 || coor.y > 9) {
       throw new Error("Outside of grid");
     }
@@ -137,7 +139,10 @@ function gameboardFactory() {
         return item.hit(coor);
       });
       return "Hit";
-    } else if (grid[coor.x][coor.y][0] == "H" || grid[coor.x][coor.y][0] == "M") {
+    } else if (
+      grid[coor.x][coor.y][0] == "H" ||
+      grid[coor.x][coor.y][0] == "M"
+    ) {
       return "Already hit";
     } else {
       grid[coor.x][coor.y] = "M";
@@ -159,6 +164,14 @@ function gameboardFactory() {
 
 // Player factory -------------------------------------------------------------
 let playerFactory = function (type) {
+  
+
+
+
+
+
+
+  
   if (type == "Human") {
     let gameboard = gameboardFactory();
     return {
@@ -172,13 +185,17 @@ let playerFactory = function (type) {
         return this.gameboard.attack(coor);
       },
     };
+
   } else if (type == "Computer") {
     let gameboard = gameboardFactory();
     return {
       type: "Computer",
       score: 0,
       gameboard,
-      placeShip: function () {
+      placeShip: function (coor, L) {
+        if (coor) {
+          return this.gameboard.placeShip(coor, L);
+        }
         // randomly places ships into the gameboard grip
         let shipLength = [5, 4, 3, 3, 2];
         let i = 0;
@@ -204,17 +221,14 @@ let playerFactory = function (type) {
           let x = Math.floor(Math.random() * 10);
           let y = Math.floor(Math.random() * 10);
           let coor = { x, y };
-          let regCheck = /Already hit/
+          let regCheck = /Already hit/;
           try {
-            let hit = human.receiveHit(coor)
-            console.log(hit)
+            let hit = human.receiveHit(coor);
             if (regCheck.test(hit)) {
-              console.log("ewww")
               loop = true;
             } else {
               loop = false;
             }
-          
           } catch (error) {
             loop = true;
           }

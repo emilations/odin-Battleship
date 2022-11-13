@@ -9,8 +9,9 @@ let game = (function () {
   let gameMode;
   let placeShipCounter;
   let initiateGame = function () {
-    human = playerFactory("Human");
-    computer = playerFactory("Computer");
+    // computer = playerFactory("Computer");
+    // human = playerFactory("Human");
+
     placeShip();
   };
   // Starts the placeship MODE
@@ -35,17 +36,40 @@ let game = (function () {
   };
   // --------------------------------------------------------------------------------------------2
   let round = function () {
+    console.log(`This is the turn of ${currentPlayer}`)
+    console.log("computer");
+    console.log(computer.gameboard.getPrivateGrid());
+    console.log(computer.gameboard.shipList[0].getFuselage());
+    console.log(computer.gameboard.shipList[1].getFuselage());
+    console.log(computer.gameboard.shipList[2].getFuselage());
+    console.log(computer.gameboard.shipList[3].getFuselage());
+    console.log(computer.gameboard.shipList[4].getFuselage());
+    console.log("human");
+    console.log(human.gameboard.getPrivateGrid());
+    console.log(human.gameboard.shipList[0].getFuselage());
+    console.log(human.gameboard.shipList[1].getFuselage());
+    console.log(human.gameboard.shipList[2].getFuselage());
+    console.log(human.gameboard.shipList[3].getFuselage());
+    console.log(human.gameboard.shipList[4].getFuselage());
     if (currentPlayer == "Human") {
       currentPlayer = currentPlayer == "Human" ? "Computer" : "Human";
-      console.log("human turn");
+      // console.log("human turn");
       displayGrid.cacheDOM();
       displayGrid.attackListenerCell();
     } else if (currentPlayer == "Computer") {
       currentPlayer = currentPlayer == "Human" ? "Computer" : "Human";
-      console.log("computer turn");
+      // console.log("computer turn");
       displayGrid.refresh("reset");
       computer.attack();
       displayGrid.refresh("populate");
+    }
+  };
+  let checkIfWon = function () {
+    if (human.gameboard.isAllHit() || computer.gameboard.isAllHit()) {
+      console.log("won1");
+      return true;
+    } else {
+      return false;
     }
   };
   let getGrid = function (player) {
@@ -202,7 +226,7 @@ let displayGrid = (function () {
       elem.addEventListener("click", attackCell);
     });
     function attackCell() {
-      computer.gameboard.attack(mouseCoor);
+      computer.receiveHit({x: mouseCoor.x, y: mouseCoor.y});
       refresh("populate");
       game.round();
     }
