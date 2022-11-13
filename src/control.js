@@ -45,6 +45,7 @@ let game = (function () {
       console.log("computer turn")
       displayGrid.refresh("reset");
       computer.attack()
+      displayGrid.refresh("populate")
     }
   };
   let getGrid = function (player) {
