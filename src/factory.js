@@ -183,8 +183,8 @@ let playerFactory = function (type) {
         let shipLength = [5, 4, 3, 3, 2];
         let i = 0;
         do {
-          let x = Math.floor(Math.random() * 9);
-          let y = Math.floor(Math.random() * 9);
+          let x = Math.floor(Math.random() * 10);
+          let y = Math.floor(Math.random() * 10);
           let dir = Math.floor(Math.random() * 2) == 0 ? "x" : "y";
           try {
             gameboard.placeShip({ x, y, dir }, shipLength[i]);
@@ -201,8 +201,8 @@ let playerFactory = function (type) {
         // ----------------------------------------------------------------------------------------------3
         let loop = false;
         do {
-          let x = Math.floor(Math.random() * 9);
-          let y = Math.floor(Math.random() * 9);
+          let x = Math.floor(Math.random() * 10);
+          let y = Math.floor(Math.random() * 10);
           let coor = { x, y };
           let regCheck = /Already hit/
           try {
