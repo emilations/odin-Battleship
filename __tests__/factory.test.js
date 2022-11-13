@@ -289,6 +289,23 @@ describe("Gameboard Factory", () => {
     expect(gameboardA.attack(coorHit)).toBe("Miss");
   });
 
+  test("Attack on emppty water again", () => {
+    let coorShip = {
+      x: 1,
+      y: 1,
+      dir: "y",
+    };
+    let coorHit = {
+      x: 5,
+      y: 5,
+    };
+    // Create gameboard and place ship
+    let gameboardA = gameboardFactory();
+    gameboardA.placeShip(coorShip, 2);
+    expect(gameboardA.attack(coorHit)).toBe("Miss");
+    expect(gameboardA.attack(coorHit)).toBe("Already hit");
+  });
+
   test("keep track of missed shots", () => {
     // Create mockup board
     let arrayResult = Array(10)

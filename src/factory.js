@@ -1,6 +1,6 @@
 // import { HotModuleReplacementPlugin } from "webpack";
+// add comment to the bellow import for the Jest test to work
 import { game, human } from "./control";
-
 
 // Shared variables
 let shipClasses = {
@@ -99,16 +99,16 @@ function gameboardFactory() {
     if (coor.dir == "x") {
       for (let i = 0; i < shipLength; i++) {
         if (grid[coor.x + i][coor.y][0] == "S") {
-          throw new Error("Interference")
+          throw new Error("Interference");
         }
       }
     } else if (coor.dir == "y") {
       for (let i = 0; i < shipLength; i++) {
         if (grid[coor.x][coor.y + i][0] == "S") {
-          throw new Error("Interference")
+          throw new Error("Interference");
         }
       }
-    } 
+    }
     let shipId = `S${shipIdCounter}`;
     shipIdCounter++;
     let ship = shipFactory(shipLength, shipId);
@@ -137,7 +137,7 @@ function gameboardFactory() {
         return item.hit(coor);
       });
       return "Hit";
-    } else if (grid[coor.x][coor.y][0] == "H") {
+    } else if (grid[coor.x][coor.y][0] == "H" || grid[coor.x][coor.y][0] == "M") {
       return "Already hit";
     } else {
       grid[coor.x][coor.y] = "M";
@@ -180,14 +180,14 @@ let playerFactory = function (type) {
       gameboard,
       placeShip: function () {
         // randomly places ships into the gameboard grip
-        let shipLength = [5,4,3,3,2];
+        let shipLength = [5, 4, 3, 3, 2];
         let i = 0;
         do {
-          let x = Math.floor(Math.random()*9);
-          let y = Math.floor(Math.random()*9);
-          let dir = Math.floor(Math.random()*2) == 0 ? "x" : "y";
+          let x = Math.floor(Math.random() * 9);
+          let y = Math.floor(Math.random() * 9);
+          let dir = Math.floor(Math.random() * 2) == 0 ? "x" : "y";
           try {
-            gameboard.placeShip({x,y,dir},shipLength[i])
+            gameboard.placeShip({ x, y, dir }, shipLength[i]);
           } catch (error) {
             i--;
           }
@@ -197,21 +197,30 @@ let playerFactory = function (type) {
       receiveHit: function (coor) {
         return this.gameboard.attack(coor);
       },
-      attack: function() {
+      attack: function () {
         // ----------------------------------------------------------------------------------------------3
         let loop = false;
         do {
-          let x = Math.floor(Math.random()*9);
-          let y = Math.floor(Math.random()*9);
-          let coor = {x, y}
+          let x = Math.floor(Math.random() * 9);
+          let y = Math.floor(Math.random() * 9);
+          let coor = { x, y };
+          let regCheck = /Already hit/
           try {
-            human.receiveHit(coor)
+            let hit = human.receiveHit(coor)
+            console.log(hit)
+            if (regCheck.test(hit)) {
+              console.log("ewww")
+              loop = true;
+            } else {
+              loop = false;
+            }
+          
           } catch (error) {
-            loop = true
+            loop = true;
           }
         } while (loop);
-        game.round()
-      }
+        game.round();
+      },
     };
   } else {
     throw new Error("Unsupported type");

@@ -37,15 +37,15 @@ let game = (function () {
   let round = function () {
     if (currentPlayer == "Human") {
       currentPlayer = currentPlayer == "Human" ? "Computer" : "Human";
-      console.log("human turn")
+      console.log("human turn");
       displayGrid.cacheDOM();
       displayGrid.attackListenerCell();
     } else if (currentPlayer == "Computer") {
       currentPlayer = currentPlayer == "Human" ? "Computer" : "Human";
-      console.log("computer turn")
+      console.log("computer turn");
       displayGrid.refresh("reset");
-      computer.attack()
-      displayGrid.refresh("populate")
+      computer.attack();
+      displayGrid.refresh("populate");
     }
   };
   let getGrid = function (player) {
@@ -233,12 +233,10 @@ let displayGrid = (function () {
             gridLeftDOM[coorLinear].classList.add("cell-ship-present");
           } else if (eachGrid[0] == "H") {
             let coorLinear = parseInt(indexX) + parseInt(indexY) * 10;
-            gridLeftDOM[coorLinear].classList.add("cell-ship-present");
-            gridLeftDOM[coorLinear].textContent = "X";
+            gridLeftDOM[coorLinear].classList.add("cell-ship-hit");
           } else if (eachGrid[0] == "M") {
             let coorLinear = parseInt(indexX) + parseInt(indexY) * 10;
-            gridLeftDOM[coorLinear].classList.add("cell-ship-present");
-            gridLeftDOM[coorLinear].textContent = "M";
+            gridLeftDOM[coorLinear].classList.add("cell-ship-missed");
           }
         });
       });
@@ -247,11 +245,9 @@ let displayGrid = (function () {
         elemRow.forEach((eachGrid, indexY) => {
           let coorLinear = parseInt(indexX) + parseInt(indexY) * 10;
           if (eachGrid[0] == "H") {
-            gridRightDOM[coorLinear].classList.add("cell-ship-present");
-            gridRightDOM[coorLinear].textContent = "X";
+            gridRightDOM[coorLinear].classList.add("cell-ship-hit");
           } else if (eachGrid[0] == "M") {
             gridRightDOM[coorLinear].classList.add("cell-ship-missed");
-            gridRightDOM[coorLinear].textContent = "M";
           }
         });
       });
