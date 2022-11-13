@@ -166,3 +166,7 @@ body {
 .cell-ship-missed {
   background-color: aqua;
 }
+
+.cell-ship-hit {
+  background-color: red;
+}
