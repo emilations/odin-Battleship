@@ -162,14 +162,6 @@ function gameboardFactory() {
 
 // Player factory -------------------------------------------------------------
 let playerFactory = function (type) {
-  
-
-
-
-
-
-
-  
   if (type == "Human") {
     let gameboard = gameboardFactory();
     return {
@@ -183,7 +175,6 @@ let playerFactory = function (type) {
         return this.gameboard.attack(coor);
       },
     };
-
   } else if (type == "Computer") {
     let gameboard = gameboardFactory();
     return {

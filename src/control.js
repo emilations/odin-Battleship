@@ -33,10 +33,9 @@ let game = (function () {
     // Start the rounds
     round();
   };
-  // --------------------------------------------------------------------------------------------2
   let round = function () {
     if (checkIfWon()) {
-      console.log("end Game")
+      console.log("end Game");
       endGame();
       return;
     }
@@ -46,7 +45,7 @@ let game = (function () {
       displayGrid.attackListenerCell();
     } else if (currentPlayer == "Computer") {
       currentPlayer = currentPlayer == "Human" ? "Computer" : "Human";
-      displayGrid.refresh("reset");
+      // ---------------------------------------------------------------------------------------------------7
       computer.attack();
       displayGrid.refresh("populate");
     }
@@ -67,8 +66,8 @@ let game = (function () {
   };
   let endGame = function () {
     currentPlayer = currentPlayer == "Human" ? "Computer" : "Human";
-    displayGrid.refresh("reset")
-    message(`${currentPlayer} Won`)
+    displayGrid.refresh("reset");
+    message(`${currentPlayer} Won`);
   };
   return {
     initiateGame,
@@ -215,14 +214,16 @@ let displayGrid = (function () {
       elem.addEventListener("mouseover", updateCursor);
       elem.addEventListener("click", attackCell);
     });
-    function attackCell() {
-      // receive attack needs object with only x and y properties
-      computer.receiveHit({ x: mouseCoor.x, y: mouseCoor.y });
-      refresh("populate");
-      game.round();
-    }
   };
-  let refresh = function (mode) {
+  // This function need to be in the scope of displayGrid because it
+  // should be acceses by the refresh function
+  // receive attack needs object with only x and y properties
+  function attackCell() {
+    computer.receiveHit({ x: mouseCoor.x, y: mouseCoor.y });
+    refresh("populate");
+    game.round();
+  }
+  let refresh = function (mode, coor) {
     // Reset the grid from any event listener
     if (mode == "reset") {
       // Left side
@@ -239,7 +240,6 @@ let displayGrid = (function () {
         old_elementRight
       );
     } else if (mode == "populate") {
-      // --------------------------------------------------------------------------------------------------------------------1
       let humanGridPrivate = human.gameboard.getPrivateGrid();
       humanGridPrivate.forEach((elemRow, indexX) => {
         elemRow.forEach((eachGrid, indexY) => {
@@ -281,6 +281,10 @@ let displayGrid = (function () {
           "cell-ship-highlight-interference"
         )
       );
+    } else if (mode == "removeListener") {
+      let coorLinear = parseInt(mouseCoor.x) + parseInt(mouseCoor.y) * 10;
+      // ----------------------------------------------------------------------------------------------6
+      gridRightDOM[coorLinear].removeEventListener("click", attackCell);
     }
   };
   let rotateShip = function () {
