@@ -38,7 +38,6 @@ function shipFactory(shipLength, shipId) {
     let hitSuccess = false;
     allCoor.forEach((elem, index) => {
       if (JSON.stringify(elem) == JSON.stringify(coor)) {
-        console.log("herer")
         fuselage[index] = false;
         hitSuccess = true;
       }
@@ -129,7 +128,6 @@ function gameboardFactory() {
     // add ship to gameboard array
   };
   let attack = function (coor) {
-    console.log("attacked")
     if (coor.x < 0 || coor.x > 9 || coor.y < 0 || coor.y > 9) {
       throw new Error("Outside of grid");
     }
