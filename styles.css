@@ -114,6 +114,8 @@ body {
 /* Cell element */
 .cell-p1 {
   border: solid rgb(75, 75, 75) 2px;
+  transition: all 0.1s ease-in-out;
+  -webkit-transition: all 0.1s ease-in-out;
 }
 
 /* Footer element */
@@ -145,7 +147,6 @@ body {
 }
 
 /* Placing ship */
-
 .cell-hover {
   background-color: aquamarine;
 }
