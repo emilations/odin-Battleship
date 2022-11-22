@@ -204,25 +204,65 @@ let playerFactory = function (type) {
         return this.gameboard.attack(coor);
       },
       attack: function () {
-        // ----------------------------------------------------------------------------------------------3
-        let loop = false;
-        do {
-          let x = Math.floor(Math.random() * 10);
-          let y = Math.floor(Math.random() * 10);
-          let coor = { x, y };
-          let regCheck = /Already hit/;
-          try {
-            let hit = human.receiveHit(coor);
-            if (regCheck.test(hit)) {
+        // ----------------------------------------------------------------------------------------------1
+        // console.log(human.gameboard.getPublicGrid())
+        let gridHuman = JSON.parse(
+          JSON.stringify(human.gameboard.getPublicGrid())
+        );
+        console.log(gridHuman);
+        if (
+          human.gameboard.getPublicGrid().every((elem, x) =>
+            elem.every((elem, y) => {
+              if (elem == "H") {
+                let coorTemp = [
+                  { x: x + 1, y: y },
+                  { x: x - 1, y: y },
+                  { x: x, y: y + 1 },
+                  { x: x, y: y - 1 },
+                ];
+                return coorTemp.every((coor) => {
+                  if (
+                    gridHuman[coor.x][coor.y] == "0" &&
+                    coor.x >= 0 &&
+                    coor.x < 10 &&
+                    coor.y >= 0 &&
+                    coor.y < 10
+                  ) {
+                    human.receiveHit(coor);
+                    game.round();
+                    return false;
+                  }
+                  return true;
+                });
+                // Check if surrounding cell does have 0
+                // Hit the surrounding cell that has a zero and return false
+                // If not then return true
+              }
+              return true;
+            })
+          )
+        ) {
+          // if the every method finds no possible hit, the random hit
+          // generator will execute bellow.
+          let loop = false;
+          do {
+            let x = Math.floor(Math.random() * 10);
+            let y = Math.floor(Math.random() * 10);
+            let coor = { x, y };
+            let regCheck = /Already hit/;
+            try {
+              let hit = human.receiveHit(coor);
+              if (regCheck.test(hit)) {
+                loop = true;
+              } else {
+                loop = false;
+              }
+            } catch (error) {
               loop = true;
-            } else {
-              loop = false;
             }
-          } catch (error) {
-            loop = true;
-          }
-        } while (loop);
-        game.round();
+          } while (loop);
+          game.round();
+        }
       },
     };
   } else {

@@ -39,11 +39,13 @@ let game = (function () {
   let round = function () {
     if (checkIfWon()) {
       console.log("end Game");
+      displayGrid.refresh("populate");
       endGame();
       return;
     }
     if (currentPlayer == "Human") {
       currentPlayer = currentPlayer == "Human" ? "Computer" : "Human";
+      
     } else if (currentPlayer == "Computer") {
       currentPlayer = currentPlayer == "Human" ? "Computer" : "Human";
       computer.attack();
@@ -177,7 +179,7 @@ let displayGrid = (function () {
         }
       }
     } else if (mode == "gameOn") {
-      // ---------------------------------------------------------------------------------------------1
+      // This mode is to create a hover effect when aiming at enemy waters
       gridRightDOM.forEach((elem) => {
         elem.addEventListener("mouseover", highlightCursor);
       });
