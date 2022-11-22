@@ -151,6 +151,10 @@ body {
   background-color: aquamarine;
 }
 
+.cell-hover-attack {
+  background-color: silver;
+}
+
 .cell-hover-outBound {
   background-color: red;
 }
@@ -171,3 +175,4 @@ body {
 .cell-ship-hit {
   background-color: red;
 }
+
