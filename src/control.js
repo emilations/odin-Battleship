@@ -27,13 +27,12 @@ let game = (function () {
     displayGrid.configure("gameOn");
     displayGrid.refresh("reset");
     displayGrid.refresh("populate");
-    message("You can start with your first hit captain");
+    message("Place your hits on enemy waters");
     // make the computer place its ship randomly
     computer.placeShip();
     displayGrid.cacheDOM();
-
     displayGrid.attackListenerCell();
-
+    displayGrid.startHighlightCell("gameOn");
     // Start the rounds
     round();
   };
@@ -45,11 +44,8 @@ let game = (function () {
     }
     if (currentPlayer == "Human") {
       currentPlayer = currentPlayer == "Human" ? "Computer" : "Human";
-      // displayGrid.attackListenerCell();
-      // displayGrid.refresh("removeListener")
     } else if (currentPlayer == "Computer") {
       currentPlayer = currentPlayer == "Human" ? "Computer" : "Human";
-      // ---------------------------------------------------------------------------------------------------7
       computer.attack();
       displayGrid.refresh("populate");
     }
@@ -180,6 +176,16 @@ let displayGrid = (function () {
           }
         }
       }
+    } else if (mode == "gameOn") {
+      // ---------------------------------------------------------------------------------------------1
+      gridRightDOM.forEach((elem) => {
+        elem.addEventListener("mouseover", highlightCursor);
+      });
+      function highlightCursor(e) {
+        refresh("highlight");
+        let coorLinear = parseInt(mouseCoor.x) + parseInt(mouseCoor.y) * 10;
+        gridRightDOM[coorLinear].classList.add("cell-hover-attack")
+      }
     }
   };
   let registerPlaceShipCell = function () {
@@ -220,13 +226,12 @@ let displayGrid = (function () {
     });
   };
   // This function need to be in the scope of displayGrid because it
-  // should be acceses by the refresh function
+  // should be accesed by the refresh function
   // receive attack needs object with only x and y properties
   function attackCell() {
     computer.receiveHit({ x: mouseCoor.x, y: mouseCoor.y });
     refresh("populate");
-    displayGrid.refresh("removeListener")
-
+    displayGrid.refresh("removeListener");
     game.round();
   }
   let refresh = function (mode) {
@@ -277,14 +282,16 @@ let displayGrid = (function () {
         elem.classList.remove(
           "cell-hover",
           "cell-hover-outBound",
-          "cell-ship-highlight-interference"
+          "cell-ship-highlight-interference",
+          "cell-hover-attack"
         )
       );
       gridRightDOM.forEach((elem) =>
         elem.classList.remove(
           "cell-hover",
           "cell-hover-outBound",
-          "cell-ship-highlight-interference"
+          "cell-ship-highlight-interference",
+          "cell-hover-attack"
         )
       );
     } else if (mode == "removeListener") {
