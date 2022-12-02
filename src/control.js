@@ -45,9 +45,9 @@ let game = (function () {
     }
     if (currentPlayer == "Human") {
       currentPlayer = currentPlayer == "Human" ? "Computer" : "Human";
-      
     } else if (currentPlayer == "Computer") {
       currentPlayer = currentPlayer == "Human" ? "Computer" : "Human";
+      message("");
       computer.attack();
       displayGrid.refresh("populate");
     }
@@ -323,6 +323,7 @@ let displayGrid = (function () {
 })();
 
 // buttonRotate can be "add" or "del"
+// To hide the message, call the function with an empty string
 let message = function (message, buttonRotate) {
   let messageDOM = document.querySelector(".message > p");
   messageDOM.innerHTML = message;
