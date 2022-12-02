@@ -6,8 +6,6 @@ let computer = playerFactory("Computer");
 // This game module using to control the main event of the game
 let game = (function () {
   let currentPlayer = "Human";
-  let gameMode;
-  let placeShipCounter;
   let initiateGame = function () {
     computer = playerFactory("Computer");
     human = playerFactory("Human");
@@ -38,7 +36,6 @@ let game = (function () {
   };
   let round = function () {
     if (checkIfWon()) {
-      console.log("end Game");
       displayGrid.refresh("populate");
       endGame();
       return;
@@ -186,7 +183,7 @@ let displayGrid = (function () {
       function highlightCursor(e) {
         refresh("highlight");
         let coorLinear = parseInt(mouseCoor.x) + parseInt(mouseCoor.y) * 10;
-        gridRightDOM[coorLinear].classList.add("cell-hover-attack")
+        gridRightDOM[coorLinear].classList.add("cell-hover-attack");
       }
     }
   };

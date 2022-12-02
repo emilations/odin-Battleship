@@ -204,12 +204,9 @@ let playerFactory = function (type) {
         return this.gameboard.attack(coor);
       },
       attack: function () {
-        // ----------------------------------------------------------------------------------------------1
-        // console.log(human.gameboard.getPublicGrid())
         let gridHuman = JSON.parse(
           JSON.stringify(human.gameboard.getPublicGrid())
         );
-        console.log(gridHuman);
         if (
           human.gameboard.getPublicGrid().every((elem, x) =>
             elem.every((elem, y) => {
