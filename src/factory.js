@@ -211,39 +211,40 @@ let playerFactory = function (type) {
         );
         console.log(gridHuman);
         if (
-          human.gameboard.getPublicGrid()
-            .every((elem, x) =>
-              elem
-                .every((elem, y) => {
-                  if (elem == "H") {
-                    // check the adjacent grid block
-                    let coorTemp = [
-                      { x: x + 1, y: y },
-                      { x: x - 1, y: y },
-                      { x: x, y: y + 1 },
-                      { x: x, y: y - 1 },
-                    ];
-                    return coorTemp.every((coor) => {
-                      if (
-                        gridHuman[coor.x][coor.y] == "0" &&
-                        coor.x >= 0 &&
-                        coor.x < 10 &&
-                        coor.y >= 0 &&
-                        coor.y < 10
-                      ) {
-                        human.receiveHit(coor);
-                        game.round();
-                        return false;
-                      }
-                      return true;
-                    });
-                    // Check if surrounding cell does have 0
-                    // Hit the surrounding cell that has a zero and return false
-                    // If not then return true
+          human.gameboard.getPublicGrid().every((elem, x) =>
+            elem.every((elem, y) => {
+              if (elem == "H") {
+                // check the adjacent grid block
+                let coorTemp = [
+                  { x: x + 1, y: y },
+                  { x: x - 1, y: y },
+                  { x: x, y: y + 1 },
+                  { x: x, y: y - 1 },
+                ];
+                return coorTemp.every((coor) => {
+                  // check if coor are not outside of grid
+                  if (
+                    coor.x >= 0 &&
+                    coor.x < 10 &&
+                    coor.y >= 0 &&
+                    coor.y < 10
+                  ) {
+                    if (gridHuman[coor.x][coor.y] == "0") {
+                      human.receiveHit(coor);
+                      game.round();
+                      return false;
+                    }
                   }
                   return true;
-                })
-            )
+                });
+                // Check if surrounding cell does have 0
+                // Hit the surrounding cell that has a zero and return false
+                // If not then return true
+              }
+              // return true is there are no hits in the grid so that
+              return true;
+            })
+          )
         ) {
           // if the every method finds no possible hit, the random hit
           // generator will execute bellow.
